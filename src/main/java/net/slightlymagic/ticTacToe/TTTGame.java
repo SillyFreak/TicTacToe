@@ -7,6 +7,10 @@
 package net.slightlymagic.ticTacToe;
 
 
+import net.slightlymagic.ticTacToe.sync.AEntity;
+import net.slightlymagic.ticTacToe.sync.Engine;
+
+
 /**
  * <p>
  * The class TTTGame.
@@ -15,7 +19,9 @@ package net.slightlymagic.ticTacToe;
  * @version V0.0 14.05.2013
  * @author SillyFreak
  */
-public class TTTGame {
+public class TTTGame extends AEntity {
+    private static final long serialVersionUID = -8190897474450467676L;
+    
     private final TTTBoard    board;
     private final TTTPlayer[] players;
     
@@ -25,9 +31,10 @@ public class TTTGame {
     //0+: winner
     private int               next, winner;
     
-    public TTTGame() {
-        board = new TTTBoard();
-        players = new TTTPlayer[] {new TTTPlayer(0), new TTTPlayer(1)};
+    public TTTGame(Engine engine) {
+        super(engine);
+        board = new TTTBoard(engine);
+        players = new TTTPlayer[] {new TTTPlayer(engine, 0), new TTTPlayer(engine, 1)};
         next = 0;
         winner = -3;
     }
@@ -64,7 +71,7 @@ public class TTTGame {
         }
         if(a.getOwner() != b.getOwner() || b.getOwner() != c.getOwner()) return true;
         
-        winner = a.getOwner().getId();
+        winner = a.getOwner().getPlayerId();
         return false;
     }
     
@@ -74,7 +81,7 @@ public class TTTGame {
     }
     
     public void placePiece(TTTPlayer player, int x, int y) {
-        if(player.getId() != next) {
+        if(player.getPlayerId() != next) {
             throw new IllegalArgumentException();
         }
         if(x < 0 || x >= 3 || y < 0 || y >= 3) {

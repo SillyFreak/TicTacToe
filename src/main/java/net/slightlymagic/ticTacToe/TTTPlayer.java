@@ -7,6 +7,10 @@
 package net.slightlymagic.ticTacToe;
 
 
+import net.slightlymagic.ticTacToe.sync.AEntity;
+import net.slightlymagic.ticTacToe.sync.Engine;
+
+
 /**
  * <p>
  * The class TTTPlayer.
@@ -15,18 +19,21 @@ package net.slightlymagic.ticTacToe;
  * @version V0.0 14.05.2013
  * @author SillyFreak
  */
-public class TTTPlayer {
-    private final int id;
+public class TTTPlayer extends AEntity {
+    private static final long serialVersionUID = -3201819660675581004L;
     
-    public TTTPlayer(int id) {
+    private final int         id;
+    
+    public TTTPlayer(Engine engine, int id) {
+        super(engine);
         this.id = id;
     }
     
-    public int getId() {
+    public int getPlayerId() {
         return id;
     }
     
     public TTTPiece newPiece() {
-        return new TTTPiece(this);
+        return new TTTPiece(getEngine(), this);
     }
 }

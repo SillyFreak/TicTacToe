@@ -9,6 +9,8 @@ package net.slightlymagic.ticTacToe;
 
 import java.util.Scanner;
 
+import net.slightlymagic.ticTacToe.sync.Engine;
+
 
 /**
  * <p>
@@ -21,7 +23,10 @@ import java.util.Scanner;
 public class TicTacToe {
     public static void main(String[] args) {
         try (Scanner sc = new Scanner(System.in);) {
-            TTTGame game = new TTTGame();
+            Engine eng = new Engine();
+            
+            
+            TTTGame game = new TTTGame(eng);
             while(game.isGameRunning()) {
                 int x = sc.nextInt(), y = sc.nextInt();
                 

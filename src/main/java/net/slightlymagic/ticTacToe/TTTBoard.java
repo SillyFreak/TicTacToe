@@ -7,6 +7,10 @@
 package net.slightlymagic.ticTacToe;
 
 
+import net.slightlymagic.ticTacToe.sync.AEntity;
+import net.slightlymagic.ticTacToe.sync.Engine;
+
+
 /**
  * <p>
  * The class TTTBoard.
@@ -15,10 +19,13 @@ package net.slightlymagic.ticTacToe;
  * @version V0.0 14.05.2013
  * @author SillyFreak
  */
-public class TTTBoard {
+public class TTTBoard extends AEntity {
+    private static final long  serialVersionUID = 840070188013305420L;
+    
     private final TTTPiece[][] board;
     
-    public TTTBoard() {
+    public TTTBoard(Engine engine) {
+        super(engine);
         board = new TTTPiece[3][3];
     }
     
