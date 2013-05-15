@@ -7,6 +7,9 @@
 package net.slightlymagic.ticTacToe.action;
 
 
+import java.io.Serializable;
+
+
 /**
  * <p>
  * The class TTTAction.
@@ -15,6 +18,6 @@ package net.slightlymagic.ticTacToe.action;
  * @version V0.0 14.05.2013
  * @author SillyFreak
  */
-public interface TTTAction {
+public interface TTTAction extends Serializable {
     public void apply();
 }

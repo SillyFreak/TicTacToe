@@ -20,9 +20,11 @@ import net.slightlymagic.ticTacToe.TTTPlayer;
  * @author SillyFreak
  */
 public class PlacePieceAction implements TTTAction {
-    private final TTTGame   game;
-    private final TTTPlayer player;
-    private final int       x, y;
+    private static final long serialVersionUID = 8511021883726165526L;
+    
+    private final TTTGame     game;
+    private final TTTPlayer   player;
+    private final int         x, y;
     
     public PlacePieceAction(TTTGame game, TTTPlayer player, int x, int y) {
         this.game = game;
