@@ -9,6 +9,8 @@ package net.slightlymagic.ticTacToe;
 
 import java.util.Scanner;
 
+import net.slightlymagic.ticTacToe.action.PlacePieceAction;
+import net.slightlymagic.ticTacToe.action.TTTAction;
 import net.slightlymagic.ticTacToe.sync.Engine;
 
 
@@ -30,7 +32,8 @@ public class TicTacToe {
             while(game.isGameRunning()) {
                 int x = sc.nextInt(), y = sc.nextInt();
                 
-                game.placePiece(game.getNextPlayer(), x, y);
+                TTTAction action = new PlacePieceAction(game, game.getNextPlayer(), x, y);
+                action.apply();
                 
                 System.out.printf("%s%s%s|%n%s%s%s|%n%s%s%s|%n", //
                         p(game, 0, 0), p(game, 1, 0), p(game, 2, 0), //
