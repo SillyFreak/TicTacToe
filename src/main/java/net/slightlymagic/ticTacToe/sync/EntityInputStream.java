@@ -41,6 +41,8 @@ public class EntityInputStream extends ObjectInputStream {
             Entity entity = engine.get(((EntityRef) obj).id);
             if(entity == null) throw new IOException("unknown entity");
             return entity;
+        } else if(obj instanceof Action) {
+            ((Action) obj).setEngine(engine);
         }
         return super.resolveObject(obj);
     }

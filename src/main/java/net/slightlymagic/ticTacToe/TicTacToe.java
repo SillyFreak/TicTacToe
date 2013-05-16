@@ -15,7 +15,7 @@ import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
 import net.slightlymagic.ticTacToe.action.PlacePieceAction;
-import net.slightlymagic.ticTacToe.action.TTTAction;
+import net.slightlymagic.ticTacToe.sync.Action;
 import net.slightlymagic.ticTacToe.sync.Engine;
 import net.slightlymagic.ticTacToe.sync.EntityInputStream;
 import net.slightlymagic.ticTacToe.sync.EntityOutputStream;
@@ -41,7 +41,7 @@ public class TicTacToe {
             while(game2.isGameRunning()) {
                 int x = sc.nextInt(), y = sc.nextInt();
                 
-                TTTAction action1 = new PlacePieceAction(game1, game1.getNextPlayer(), x, y);
+                Action action1 = new PlacePieceAction(eng1, game1, game1.getNextPlayer(), x, y);
                 action1.apply();
                 
                 byte[] buf;
@@ -56,7 +56,7 @@ public class TicTacToe {
                 try (ByteArrayInputStream bais = new ByteArrayInputStream(buf);
                         ObjectInputStream ois = new EntityInputStream(eng2, bais)) {
                     
-                    TTTAction action2 = (TTTAction) ois.readObject();
+                    Action action2 = (Action) ois.readObject();
                     action2.apply();
                 }
                 
