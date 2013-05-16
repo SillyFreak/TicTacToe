@@ -8,6 +8,7 @@ package net.slightlymagic.ticTacToe.sync;
 
 
 import java.io.Serializable;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -22,7 +23,32 @@ import java.util.ListIterator;
  * @author SillyFreak
  */
 public abstract class Action implements Serializable {
-    private static final long            serialVersionUID = 5358251818076675520L;
+    private static final long                       serialVersionUID = 5358251818076675520L;
+    
+    private static final ThreadLocal<Deque<Action>> actions;
+    
+    static {
+        actions = new ThreadLocal<Deque<Action>>() {
+            @Override
+            protected Deque<Action> initialValue() {
+                return new LinkedList<>();
+            }
+        };
+    }
+    
+    static Action get() {
+        return actions.get().getFirst();
+    }
+    
+    private static void push(Action a) {
+        actions.get().addFirst(a);
+    }
+    
+    private static void pop(Action a) {
+        Action a0 = actions.get().removeFirst();
+        assert a == a0;
+    }
+    
     
     private transient Engine             engine;
     private transient List<Modification> modifications;
@@ -41,7 +67,12 @@ public abstract class Action implements Serializable {
     }
     
     public void apply() {
-        apply0();
+        try {
+            push(this);
+            apply0();
+        } finally {
+            pop(this);
+        }
     }
     
     public void revert() {
@@ -49,6 +80,10 @@ public abstract class Action implements Serializable {
             it.previous().revert();
             it.remove();
         }
+    }
+    
+    void addModification(Modification m) {
+        modifications.add(m);
     }
     
     protected abstract void apply0();
