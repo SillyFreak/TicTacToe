@@ -42,7 +42,7 @@ public class EntityInputStream extends ObjectInputStream {
             if(entity == null) throw new IOException("unknown entity");
             return entity;
         } else if(obj instanceof Action) {
-            ((Action) obj).setEngine(engine);
+            ((Action) obj).init(engine);
         }
         return super.resolveObject(obj);
     }

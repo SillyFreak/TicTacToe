@@ -8,6 +8,9 @@ package net.slightlymagic.ticTacToe.sync;
 
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 
 /**
@@ -19,16 +22,18 @@ import java.io.Serializable;
  * @author SillyFreak
  */
 public abstract class Action implements Serializable {
-    private static final long serialVersionUID = 5358251818076675520L;
+    private static final long            serialVersionUID = 5358251818076675520L;
     
-    private transient Engine  engine;
+    private transient Engine             engine;
+    private transient List<Modification> modifications;
     
     public Action(Engine engine) {
-        setEngine(engine);
+        init(engine);
     }
     
-    void setEngine(Engine engine) {
+    void init(Engine engine) {
         this.engine = engine;
+        modifications = new LinkedList<Modification>();
     }
     
     public Engine getEngine() {
@@ -36,7 +41,14 @@ public abstract class Action implements Serializable {
     }
     
     public void apply() {
-        
+        apply0();
+    }
+    
+    public void revert() {
+        for(ListIterator<Modification> it = modifications.listIterator(modifications.size()); it.hasPrevious();) {
+            it.previous().revert();
+            it.remove();
+        }
     }
     
     protected abstract void apply0();
