@@ -37,13 +37,23 @@ public class EntityInputStream extends ObjectInputStream {
     
     @Override
     protected Object resolveObject(Object obj) throws IOException {
-        if(obj instanceof EntityRef) {
-            Entity entity = engine.get(((EntityRef) obj).id);
-            if(entity == null) throw new IOException("unknown entity");
-            return entity;
+        if(obj instanceof SerialRef) {
+            SerialRef ref = (SerialRef) obj;
+            switch(ref.type) {
+                case SerialRef.ENGINE:
+                    return engine;
+                case SerialRef.ENTITY:
+                    Entity entity = engine.get(ref.id);
+                    if(entity == null) throw new IOException("unknown entity");
+                    return entity;
+                case SerialRef.STATE:
+                default:
+                    throw new AssertionError();
+            }
         } else if(obj instanceof Action) {
             ((Action) obj).init(engine);
         }
-        return super.resolveObject(obj);
+        
+        return obj;
     }
 }

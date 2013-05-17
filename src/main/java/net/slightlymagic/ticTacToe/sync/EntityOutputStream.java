@@ -37,10 +37,18 @@ public class EntityOutputStream extends ObjectOutputStream {
     
     @Override
     protected Object replaceObject(Object obj) throws IOException {
-        if(obj instanceof Entity) {
+        if(obj instanceof Engine) {
+            if(obj != engine) {
+                throw new IOException("Foreign engine: " + obj);
+            }
+            return SerialRef.ref(engine);
+        } else if(obj instanceof Entity) {
             Entity entity = (Entity) obj;
-            if(entity.getEngine() == engine) return new EntityRef(entity);
+            if(entity.getEngine() != engine) {
+                throw new IOException("Foreign entity: " + entity + "@" + entity.getEngine());
+            }
+            return SerialRef.ref(entity);
         }
-        return super.replaceObject(obj);
+        return obj;
     }
 }
