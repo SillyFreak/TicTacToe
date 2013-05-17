@@ -7,6 +7,8 @@
 package net.slightlymagic.ticTacToe.sync;
 
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -50,15 +52,22 @@ public abstract class Action implements Serializable {
     }
     
     
-    private transient Engine             engine;
     private transient List<Modification> modifications;
     
+    private Engine                       engine;
+    
     public Action(Engine engine) {
-        init(engine);
+        this.engine = engine;
+        init();
     }
     
-    void init(Engine engine) {
-        this.engine = engine;
+    //deserialize
+    private void readObject(ObjectInputStream is) throws IOException, ClassNotFoundException {
+        is.defaultReadObject();
+        init();
+    }
+    
+    private void init() {
         modifications = new LinkedList<Modification>();
     }
     

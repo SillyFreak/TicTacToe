@@ -50,10 +50,7 @@ public class EntityInputStream extends ObjectInputStream {
                 default:
                     throw new AssertionError();
             }
-        } else if(obj instanceof Action) {
-            ((Action) obj).init(engine);
         }
-        
         return obj;
     }
 }
