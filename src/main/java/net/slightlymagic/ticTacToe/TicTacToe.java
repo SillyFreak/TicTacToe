@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 import net.slightlymagic.ticTacToe.action.PlacePieceAction;
 import net.slightlymagic.ticTacToe.proto.Objects.Obj;
+import net.slightlymagic.ticTacToe.proto.ProtoConfig;
 import net.slightlymagic.ticTacToe.proto.ProtoInput;
 import net.slightlymagic.ticTacToe.proto.ProtoOutput;
 import net.slightlymagic.ticTacToe.sync.Action;
@@ -27,10 +28,18 @@ import net.slightlymagic.ticTacToe.sync.Engine;
  * @author SillyFreak
  */
 public class TicTacToe {
+    private static ProtoConfig config(Engine engine) {
+        ProtoConfig config = new ProtoConfig();
+        
+        PlacePieceAction.configure(config, engine);
+        
+        return config;
+    }
+    
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         try (Scanner sc = new Scanner(System.in);) {
-            Engine eng1 = new Engine();
-            Engine eng2 = new Engine();
+            Engine eng1 = new Engine(), eng2 = new Engine();
+            ProtoConfig conf1 = config(eng1), conf2 = config(eng2);
             
             
             TTTGame game1 = new TTTGame(eng1);
@@ -41,11 +50,9 @@ public class TicTacToe {
                 Action action1 = new PlacePieceAction(game1, game1.getNextPlayer(), x, y);
                 action1.apply();
                 
-                Obj obj = new ProtoOutput().writeObject(action1);
+                Obj obj = new ProtoOutput(conf1).writeObject(action1);
                 
-                ProtoInput in = new ProtoInput();
-                in.putConstructor(PlacePieceAction.FIELD, PlacePieceAction.getConstructor(eng2));
-                Action action2 = (Action) in.readObject(obj);
+                Action action2 = (Action) new ProtoInput(conf2).readObject(obj);
                 action2.apply();
                 
                 

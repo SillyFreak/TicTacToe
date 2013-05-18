@@ -22,16 +22,12 @@ import net.slightlymagic.ticTacToe.proto.Objects.Obj;
  * @author SillyFreak
  */
 public class ProtoInput {
-    private final Map<Integer, Object>           objects;
-    private final Map<Integer, ProtoConstructor> constructors;
+    private final Map<Integer, Object> objects;
+    private final ProtoConfig          config;
     
-    public ProtoInput() {
+    public ProtoInput(ProtoConfig config) {
         objects = new HashMap<>();
-        constructors = new HashMap<>();
-    }
-    
-    public void putConstructor(int type, ProtoConstructor c) {
-        constructors.put(type, c);
+        this.config = config;
     }
     
     public Object readObject(Obj obj) throws ProtoSerException {
@@ -47,15 +43,10 @@ public class ProtoInput {
             }
         }
         
-        Object object = createInstance(obj);
-        ((ProtoSerializable) object).deserialize(this, obj); //TODO make optional
+        ProtoIO<?> io = config.get(obj.getType());
+        if(io == null) throw new ProtoSerException("No IO for type: " + obj.getType());
+        Object object = io.deserialize(this, obj);
         
         return object;
-    }
-    
-    protected Object createInstance(Obj obj) throws ProtoSerException {
-        ProtoConstructor pc = constructors.get(obj.getType());
-        if(pc == null) throw new ProtoSerException("No constructor for proto: " + obj);
-        return pc.construct(obj);
     }
 }

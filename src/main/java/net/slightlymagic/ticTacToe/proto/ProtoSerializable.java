@@ -7,7 +7,6 @@
 package net.slightlymagic.ticTacToe.proto;
 
 
-import net.slightlymagic.ticTacToe.proto.Objects.Obj;
 
 
 /**
@@ -20,8 +19,4 @@ import net.slightlymagic.ticTacToe.proto.Objects.Obj;
  */
 public interface ProtoSerializable {
     public int getTypeId();
-    
-    public void serialize(ProtoOutput out, Obj.Builder obj) throws ProtoSerException;
-    
-    public void deserialize(ProtoInput in, Obj obj) throws ProtoSerException;
 }

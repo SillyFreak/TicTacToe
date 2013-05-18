@@ -10,7 +10,9 @@ package net.slightlymagic.ticTacToe.action;
 import net.slightlymagic.ticTacToe.TTTGame;
 import net.slightlymagic.ticTacToe.TTTPlayer;
 import net.slightlymagic.ticTacToe.proto.Objects.Obj;
-import net.slightlymagic.ticTacToe.proto.ProtoConstructor;
+import net.slightlymagic.ticTacToe.proto.Objects.Obj.Builder;
+import net.slightlymagic.ticTacToe.proto.ProtoConfig;
+import net.slightlymagic.ticTacToe.proto.ProtoIO;
 import net.slightlymagic.ticTacToe.proto.ProtoInput;
 import net.slightlymagic.ticTacToe.proto.ProtoOutput;
 import net.slightlymagic.ticTacToe.proto.ProtoSerException;
@@ -34,8 +36,12 @@ public class PlacePieceAction extends Action implements ProtoSerializable {
     public static final int                                        FIELD     = PlacePieceActionP.PLACE_PIECE_ACTION_FIELD_NUMBER;
     public static final GeneratedExtension<Obj, PlacePieceActionP> EXTENSION = PlacePieceActionP.placePieceAction;
     
-    public static ProtoConstructor getConstructor(Engine engine) {
-        return new PConstructor(engine);
+    public static ProtoIO<PlacePieceAction> getIO(Engine engine) {
+        return new IO(engine);
+    }
+    
+    public static void configure(ProtoConfig config, Engine engine) {
+        config.put(FIELD, getIO(engine));
     }
     
     private final TTTGame   game;
@@ -59,29 +65,26 @@ public class PlacePieceAction extends Action implements ProtoSerializable {
         return FIELD;
     }
     
-    @Override
-    public void serialize(ProtoOutput out, Obj.Builder obj) throws ProtoSerException {
-        PlacePieceActionP.Builder b = PlacePieceActionP.newBuilder();
-        b.setGame(game.getId());
-        b.setPlayer(player.getId());
-        b.setX(x);
-        b.setY(y);
-        
-        obj.setExtension(EXTENSION, b.build());
-    }
-    
-    @Override
-    public void deserialize(ProtoInput in, Obj obj) throws ProtoSerException {}
-    
-    private static class PConstructor implements ProtoConstructor {
+    private static class IO implements ProtoIO<PlacePieceAction> {
         private final Engine engine;
         
-        public PConstructor(Engine engine) {
+        public IO(Engine engine) {
             this.engine = engine;
         }
         
         @Override
-        public Object construct(Obj obj) throws ProtoSerException {
+        public void serialize(ProtoOutput out, PlacePieceAction object, Builder obj) throws ProtoSerException {
+            PlacePieceActionP.Builder b = PlacePieceActionP.newBuilder();
+            b.setGame(object.game.getId());
+            b.setPlayer(object.player.getId());
+            b.setX(object.x);
+            b.setY(object.y);
+            
+            obj.setExtension(EXTENSION, b.build());
+        }
+        
+        @Override
+        public PlacePieceAction deserialize(ProtoInput in, Obj obj) throws ProtoSerException {
             PlacePieceActionP p = obj.getExtension(EXTENSION);
             TTTGame game = (TTTGame) engine.get(p.getGame());
             TTTPlayer player = (TTTPlayer) engine.get(p.getPlayer());
