@@ -37,8 +37,9 @@ public class ProtoOutput {
         if(!(o instanceof ProtoSerializable)) throw new ProtoSerException("not serializable: " + o);
         
         ProtoSerializable object = (ProtoSerializable) o;
-        ProtoIO<ProtoSerializable> io = (ProtoIO<ProtoSerializable>) config.get(object.getTypeId());
-        if(io == null) throw new ProtoSerException("No IO for type: " + object.getTypeId());
+        int typeId = object.getTypeId();
+        ProtoIO<ProtoSerializable> io = (ProtoIO<ProtoSerializable>) config.get(typeId);
+        if(io == null) throw new ProtoSerException("No IO for type: " + typeId);
         
         Builder obj = Obj.newBuilder();
         
@@ -47,7 +48,7 @@ public class ProtoOutput {
         objects.put(o, obj.build());
         
         //parse the actual object. allow objects to overwrite the type
-        obj.setType(object.getTypeId());
+        obj.setTypeId(typeId);
         io.serialize(this, object, obj);
         return obj.build();
     }

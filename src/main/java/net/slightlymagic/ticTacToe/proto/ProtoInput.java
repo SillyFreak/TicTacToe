@@ -31,20 +31,22 @@ public class ProtoInput {
     }
     
     public Object readObject(Obj obj) throws ProtoSerException {
-        if(obj.getType() == 0) {
-            if(obj.getId() == 0) {
+        int typeId = obj.getTypeId();
+        if(typeId == 0) {
+            int id = obj.getId();
+            if(id == 0) {
                 return null;
             } else {
-                Object object = objects.get(obj.getId());
+                Object object = objects.get(id);
                 if(object == null) {
-                    throw new ProtoSerException("Unknown object: " + obj.getClass().getName() + ":" + obj.getId());
+                    throw new ProtoSerException("Unknown object: " + obj.getClass().getName() + ":" + id);
                 }
                 return object;
             }
         }
         
-        ProtoIO<?> io = config.get(obj.getType());
-        if(io == null) throw new ProtoSerException("No IO for type: " + obj.getType());
+        ProtoIO<?> io = config.get(typeId);
+        if(io == null) throw new ProtoSerException("No IO for type: " + typeId);
         Object object = io.deserialize(this, obj);
         
         return object;
