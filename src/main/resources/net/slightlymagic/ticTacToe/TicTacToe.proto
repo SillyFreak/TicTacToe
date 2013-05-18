@@ -1,0 +1,17 @@
+package ticTacToe;
+
+import "net/slightlymagic/ticTacToe/objects.proto";
+
+option java_package = "net.slightlymagic.ticTacToe.proto";
+option java_outer_classname = "TTTP";
+
+message PlacePieceActionP {
+	extend Obj {
+		optional PlacePieceActionP place_piece_action = 101;
+	}
+	
+	optional uint32	game	= 1;
+	optional uint32	player	= 2;
+	optional uint32	x		= 3;
+	optional uint32	y		= 4;
+}

@@ -7,18 +7,15 @@
 package net.slightlymagic.ticTacToe;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
 import net.slightlymagic.ticTacToe.action.PlacePieceAction;
+import net.slightlymagic.ticTacToe.proto.Objects.Obj;
+import net.slightlymagic.ticTacToe.proto.ProtoInput;
+import net.slightlymagic.ticTacToe.proto.ProtoOutput;
 import net.slightlymagic.ticTacToe.sync.Action;
 import net.slightlymagic.ticTacToe.sync.Engine;
-import net.slightlymagic.ticTacToe.sync.EntityInputStream;
-import net.slightlymagic.ticTacToe.sync.EntityOutputStream;
 
 
 /**
@@ -44,21 +41,12 @@ public class TicTacToe {
                 Action action1 = new PlacePieceAction(eng1, game1, game1.getNextPlayer(), x, y);
                 action1.apply();
                 
-                byte[] buf;
-                try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        ObjectOutputStream oos = new EntityOutputStream(eng1, baos);) {
-                    
-                    oos.writeObject(action1);
-                    oos.flush();
-                    buf = baos.toByteArray();
-                }
+                Obj obj = new ProtoOutput().writeObject(action1);
                 
-                try (ByteArrayInputStream bais = new ByteArrayInputStream(buf);
-                        ObjectInputStream ois = new EntityInputStream(eng2, bais)) {
-                    
-                    Action action2 = (Action) ois.readObject();
-                    action2.apply();
-                }
+                ProtoInput in = new ProtoInput();
+                in.putConstructor(PlacePieceAction.FIELD, PlacePieceAction.getConstructor(eng2));
+                Action action2 = (Action) in.readObject(obj);
+                action2.apply();
                 
                 
                 System.out.printf("%s%s%s|%n%s%s%s|%n%s%s%s|%n", //
