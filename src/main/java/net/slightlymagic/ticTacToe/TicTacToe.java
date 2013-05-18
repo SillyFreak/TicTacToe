@@ -38,7 +38,7 @@ public class TicTacToe {
             while(game2.isGameRunning()) {
                 int x = sc.nextInt(), y = sc.nextInt();
                 
-                Action action1 = new PlacePieceAction(eng1, game1, game1.getNextPlayer(), x, y);
+                Action action1 = new PlacePieceAction(game1, game1.getNextPlayer(), x, y);
                 action1.apply();
                 
                 Obj obj = new ProtoOutput().writeObject(action1);

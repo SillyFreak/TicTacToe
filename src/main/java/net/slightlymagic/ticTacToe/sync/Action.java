@@ -48,15 +48,9 @@ public abstract class Action {
     
     
     private List<Modification> modifications;
-    private Engine             engine;
     
-    public Action(Engine engine) {
-        this.engine = engine;
+    public Action() {
         modifications = new LinkedList<Modification>();
-    }
-    
-    public Engine getEngine() {
-        return engine;
     }
     
     public void apply() {
