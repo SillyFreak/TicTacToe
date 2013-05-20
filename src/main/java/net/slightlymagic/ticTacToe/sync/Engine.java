@@ -23,11 +23,11 @@ public class Engine {
     private int                  nextId   = 0;
     private Map<Integer, Entity> entities = new HashMap<>();
     
-    int newId() {
+    public int newId() {
         return nextId++;
     }
     
-    void put(Entity entity) {
+    public void put(Entity entity) {
         entities.put(entity.getId(), entity);
     }
     
