@@ -28,14 +28,6 @@ import at.pria.koza.polybuf.proto.Polybuf.Obj;
  * @author SillyFreak
  */
 public class TicTacToe {
-    private static PolybufConfig config(Engine engine) {
-        PolybufConfig config = new PolybufConfig();
-        
-        PlacePieceAction.configure(config, engine);
-        
-        return config;
-    }
-    
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         try (Scanner sc = new Scanner(System.in);) {
             Engine eng1 = new Engine(), eng2 = new Engine();
@@ -63,6 +55,14 @@ public class TicTacToe {
             }
             System.out.println("===# " + game2.getWinner().getPlayerId());
         }
+    }
+    
+    private static PolybufConfig config(Engine engine) {
+        PolybufConfig config = new PolybufConfig();
+        
+        PlacePieceAction.configure(config, engine);
+        
+        return config;
     }
     
     private static String p(TTTGame game, int x, int y) {
