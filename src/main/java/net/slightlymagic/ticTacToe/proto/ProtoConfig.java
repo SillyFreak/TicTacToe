@@ -13,10 +13,15 @@ import java.util.Map;
 
 /**
  * <p>
- * The class ProtoConfig.
+ * A {@code ProtoConfig} encapsulates {@link ProtoIO}s for different object types, each identified by an
+ * {@code int} that corresponds to the protobuf extension field label associated with that type (see
+ * {@link ProtoSerializable}). Note that this class does not have a notion of what message type a{@code ProtoIO}
+ * corresponds to, and thus does not enforce anything of the sort. Implementors are free to design {@code ProtoIO}
+ * classes that work for any number and any type of messages. The user simply has to register that {@code ProtoIO}
+ * with all the messages he wants.
  * </p>
  * 
- * @version V0.0 18.05.2013
+ * @version V1.0 18.05.2013
  * @author SillyFreak
  */
 public class ProtoConfig {
