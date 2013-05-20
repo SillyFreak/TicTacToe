@@ -47,7 +47,8 @@ public class PlacePieceAction extends Action implements PolybufSerializable {
     private final TTTPlayer player;
     private final int       x, y;
     
-    public PlacePieceAction(TTTGame game, TTTPlayer player, int x, int y) {
+    public PlacePieceAction(Engine engine, TTTGame game, TTTPlayer player, int x, int y) {
+        super(engine);
         this.game = game;
         this.player = player;
         this.x = x;
@@ -89,7 +90,7 @@ public class PlacePieceAction extends Action implements PolybufSerializable {
             TTTPlayer player = (TTTPlayer) engine.get(p.getPlayer());
             int x = p.getX(), y = p.getY();
             
-            return new PlacePieceAction(game, player, x, y);
+            return new PlacePieceAction(engine, game, player, x, y);
         }
         
         @Override
