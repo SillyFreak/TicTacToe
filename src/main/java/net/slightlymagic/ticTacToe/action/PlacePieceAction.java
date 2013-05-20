@@ -84,7 +84,7 @@ public class PlacePieceAction extends Action implements ProtoSerializable {
         }
         
         @Override
-        public PlacePieceAction deserialize(ProtoInput in, Obj obj) throws ProtoSerException {
+        public PlacePieceAction initialize(ProtoInput in, Obj obj) throws ProtoSerException {
             PlacePieceActionP p = obj.getExtension(EXTENSION);
             TTTGame game = (TTTGame) engine.get(p.getGame());
             TTTPlayer player = (TTTPlayer) engine.get(p.getPlayer());
@@ -92,5 +92,8 @@ public class PlacePieceAction extends Action implements ProtoSerializable {
             
             return new PlacePieceAction(game, player, x, y);
         }
+        
+        @Override
+        public void deserialize(ProtoInput in, Obj obj, PlacePieceAction object) throws ProtoSerException {}
     }
 }

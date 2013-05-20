@@ -21,5 +21,7 @@ import net.slightlymagic.ticTacToe.proto.Objects.Obj;
 public interface ProtoIO<T extends ProtoSerializable> {
     public void serialize(ProtoOutput out, T object, Obj.Builder obj) throws ProtoSerException;
     
-    public T deserialize(ProtoInput in, Obj obj) throws ProtoSerException;
+    public T initialize(ProtoInput in, Obj obj) throws ProtoSerException;
+    
+    public void deserialize(ProtoInput in, Obj obj, T object) throws ProtoSerException;
 }

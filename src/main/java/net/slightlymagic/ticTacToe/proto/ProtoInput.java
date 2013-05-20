@@ -30,6 +30,7 @@ public class ProtoInput {
         this.config = config;
     }
     
+    @SuppressWarnings("unchecked")
     public Object readObject(Obj obj) throws ProtoSerException {
         int typeId = obj.getTypeId();
         if(typeId == 0) {
@@ -45,9 +46,11 @@ public class ProtoInput {
             }
         }
         
-        ProtoIO<?> io = config.get(typeId);
+        ProtoIO<ProtoSerializable> io = (ProtoIO<ProtoSerializable>) config.get(typeId);
         if(io == null) throw new ProtoSerException("No IO for type: " + typeId);
-        Object object = io.deserialize(this, obj);
+        ProtoSerializable object = io.initialize(this, obj);
+        objects.put(obj.getId(), object);
+        io.deserialize(this, obj, object);
         
         return object;
     }
