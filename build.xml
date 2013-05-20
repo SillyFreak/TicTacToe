@@ -17,7 +17,6 @@
             <arg path="${SRC}" />
             <arg value="--java_out" />
             <arg path="${DST}" />
-            <arg path="${SRC}/${PKG}/objects.proto" />
             <arg path="${SRC}/${PKG}/TicTacToe.proto" />
         </exec>
     </target>

@@ -1,7 +1,7 @@
-package ticTacToe;
+package polybuf;
 
-option java_package = "net.slightlymagic.ticTacToe.proto";
-option java_outer_classname = "Objects";
+option java_package = "at.pria.koza.polybuf.proto";
+option java_outer_classname = "Polybuf";
 
 message Obj {
 	// The type of the object, which corresponds to the extension number for the type's message.

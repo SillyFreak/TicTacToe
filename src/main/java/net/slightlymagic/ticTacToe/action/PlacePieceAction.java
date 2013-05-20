@@ -9,17 +9,16 @@ package net.slightlymagic.ticTacToe.action;
 
 import net.slightlymagic.ticTacToe.TTTGame;
 import net.slightlymagic.ticTacToe.TTTPlayer;
-import net.slightlymagic.ticTacToe.proto.Objects.Obj;
-import net.slightlymagic.ticTacToe.proto.Objects.Obj.Builder;
-import net.slightlymagic.ticTacToe.proto.ProtoConfig;
-import net.slightlymagic.ticTacToe.proto.ProtoIO;
-import net.slightlymagic.ticTacToe.proto.ProtoInput;
-import net.slightlymagic.ticTacToe.proto.ProtoOutput;
-import net.slightlymagic.ticTacToe.proto.ProtoSerException;
-import net.slightlymagic.ticTacToe.proto.ProtoSerializable;
 import net.slightlymagic.ticTacToe.proto.TTTP.PlacePieceActionP;
 import net.slightlymagic.ticTacToe.sync.Action;
 import net.slightlymagic.ticTacToe.sync.Engine;
+import at.pria.koza.polybuf.PolybufConfig;
+import at.pria.koza.polybuf.PolybufException;
+import at.pria.koza.polybuf.PolybufIO;
+import at.pria.koza.polybuf.PolybufInput;
+import at.pria.koza.polybuf.PolybufOutput;
+import at.pria.koza.polybuf.PolybufSerializable;
+import at.pria.koza.polybuf.proto.Polybuf.Obj;
 
 import com.google.protobuf.GeneratedMessage.GeneratedExtension;
 
@@ -32,15 +31,15 @@ import com.google.protobuf.GeneratedMessage.GeneratedExtension;
  * @version V0.0 14.05.2013
  * @author SillyFreak
  */
-public class PlacePieceAction extends Action implements ProtoSerializable {
+public class PlacePieceAction extends Action implements PolybufSerializable {
     public static final int                                        FIELD     = PlacePieceActionP.PLACE_PIECE_ACTION_FIELD_NUMBER;
     public static final GeneratedExtension<Obj, PlacePieceActionP> EXTENSION = PlacePieceActionP.placePieceAction;
     
-    public static ProtoIO<PlacePieceAction> getIO(Engine engine) {
+    public static PolybufIO<PlacePieceAction> getIO(Engine engine) {
         return new IO(engine);
     }
     
-    public static void configure(ProtoConfig config, Engine engine) {
+    public static void configure(PolybufConfig config, Engine engine) {
         config.put(FIELD, getIO(engine));
     }
     
@@ -65,7 +64,7 @@ public class PlacePieceAction extends Action implements ProtoSerializable {
         return FIELD;
     }
     
-    private static class IO implements ProtoIO<PlacePieceAction> {
+    private static class IO implements PolybufIO<PlacePieceAction> {
         private final Engine engine;
         
         public IO(Engine engine) {
@@ -73,7 +72,7 @@ public class PlacePieceAction extends Action implements ProtoSerializable {
         }
         
         @Override
-        public void serialize(ProtoOutput out, PlacePieceAction object, Builder obj) throws ProtoSerException {
+        public void serialize(PolybufOutput out, PlacePieceAction object, Obj.Builder obj) throws PolybufException {
             PlacePieceActionP.Builder b = PlacePieceActionP.newBuilder();
             b.setGame(object.game.getId());
             b.setPlayer(object.player.getId());
@@ -84,7 +83,7 @@ public class PlacePieceAction extends Action implements ProtoSerializable {
         }
         
         @Override
-        public PlacePieceAction initialize(ProtoInput in, Obj obj) throws ProtoSerException {
+        public PlacePieceAction initialize(PolybufInput in, Obj obj) throws PolybufException {
             PlacePieceActionP p = obj.getExtension(EXTENSION);
             TTTGame game = (TTTGame) engine.get(p.getGame());
             TTTPlayer player = (TTTPlayer) engine.get(p.getPlayer());
@@ -94,6 +93,6 @@ public class PlacePieceAction extends Action implements ProtoSerializable {
         }
         
         @Override
-        public void deserialize(ProtoInput in, Obj obj, PlacePieceAction object) throws ProtoSerException {}
+        public void deserialize(PolybufInput in, Obj obj, PlacePieceAction object) throws PolybufException {}
     }
 }

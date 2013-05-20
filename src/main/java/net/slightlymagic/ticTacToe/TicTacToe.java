@@ -11,12 +11,12 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import net.slightlymagic.ticTacToe.action.PlacePieceAction;
-import net.slightlymagic.ticTacToe.proto.Objects.Obj;
-import net.slightlymagic.ticTacToe.proto.ProtoConfig;
-import net.slightlymagic.ticTacToe.proto.ProtoInput;
-import net.slightlymagic.ticTacToe.proto.ProtoOutput;
 import net.slightlymagic.ticTacToe.sync.Action;
 import net.slightlymagic.ticTacToe.sync.Engine;
+import at.pria.koza.polybuf.PolybufConfig;
+import at.pria.koza.polybuf.PolybufInput;
+import at.pria.koza.polybuf.PolybufOutput;
+import at.pria.koza.polybuf.proto.Polybuf.Obj;
 
 
 /**
@@ -28,8 +28,8 @@ import net.slightlymagic.ticTacToe.sync.Engine;
  * @author SillyFreak
  */
 public class TicTacToe {
-    private static ProtoConfig config(Engine engine) {
-        ProtoConfig config = new ProtoConfig();
+    private static PolybufConfig config(Engine engine) {
+        PolybufConfig config = new PolybufConfig();
         
         PlacePieceAction.configure(config, engine);
         
@@ -39,7 +39,7 @@ public class TicTacToe {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         try (Scanner sc = new Scanner(System.in);) {
             Engine eng1 = new Engine(), eng2 = new Engine();
-            ProtoConfig conf1 = config(eng1), conf2 = config(eng2);
+            PolybufConfig conf1 = config(eng1), conf2 = config(eng2);
             
             
             TTTGame game1 = new TTTGame(eng1);
@@ -50,9 +50,9 @@ public class TicTacToe {
                 Action action1 = new PlacePieceAction(game1, game1.getNextPlayer(), x, y);
                 action1.apply();
                 
-                Obj obj = new ProtoOutput(conf1).writeObject(action1);
+                Obj obj = new PolybufOutput(conf1).writeObject(action1);
                 
-                Action action2 = (Action) new ProtoInput(conf2).readObject(obj);
+                Action action2 = (Action) new PolybufInput(conf2).readObject(obj);
                 action2.apply();
                 
                 

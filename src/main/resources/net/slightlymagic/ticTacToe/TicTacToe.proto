@@ -1,12 +1,12 @@
 package ticTacToe;
 
-import "net/slightlymagic/ticTacToe/objects.proto";
+import "at/pria/koza/polybuf/polybuf.proto";
 
 option java_package = "net.slightlymagic.ticTacToe.proto";
 option java_outer_classname = "TTTP";
 
 message PlacePieceActionP {
-	extend Obj {
+	extend polybuf.Obj {
 		optional PlacePieceActionP place_piece_action = 101;
 	}
 	
