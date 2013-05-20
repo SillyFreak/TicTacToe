@@ -38,7 +38,7 @@ public class ProtoOutput {
         
         ProtoSerializable object = (ProtoSerializable) o;
         int typeId = object.getTypeId();
-        ProtoIO<ProtoSerializable> io = (ProtoIO<ProtoSerializable>) config.get(typeId);
+        ProtoIO<Object> io = (ProtoIO<Object>) config.get(typeId);
         if(io == null) throw new ProtoSerException("No IO for type: " + typeId);
         
         Builder obj = Obj.newBuilder();

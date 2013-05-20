@@ -46,9 +46,9 @@ public class ProtoInput {
             }
         }
         
-        ProtoIO<ProtoSerializable> io = (ProtoIO<ProtoSerializable>) config.get(typeId);
+        ProtoIO<Object> io = (ProtoIO<Object>) config.get(typeId);
         if(io == null) throw new ProtoSerException("No IO for type: " + typeId);
-        ProtoSerializable object = io.initialize(this, obj);
+        Object object = io.initialize(this, obj);
         objects.put(obj.getId(), object);
         io.deserialize(this, obj, object);
         

@@ -22,7 +22,7 @@ import net.slightlymagic.ticTacToe.proto.Objects.Obj;
  * @version V1.0 20.05.2013
  * @author SillyFreak
  */
-public interface ProtoIO<T extends ProtoSerializable> {
+public interface ProtoIO<T> {
     /**
      * <p>
      * Serializes {@code object} into the given {@link Obj}. Usually, this will create one or more messages that
