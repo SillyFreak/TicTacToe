@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import net.slightlymagic.ticTacToe.action.PlacePieceAction;
-import net.slightlymagic.ticTacToe.sync.Action;
-import net.slightlymagic.ticTacToe.sync.Engine;
+import at.pria.koza.harmonic.Action;
+import at.pria.koza.harmonic.Engine;
 import at.pria.koza.polybuf.PolybufConfig;
 import at.pria.koza.polybuf.PolybufInput;
 import at.pria.koza.polybuf.PolybufOutput;

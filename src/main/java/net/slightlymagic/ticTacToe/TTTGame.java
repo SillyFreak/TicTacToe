@@ -7,8 +7,8 @@
 package net.slightlymagic.ticTacToe;
 
 
-import net.slightlymagic.ticTacToe.sync.AEntity;
-import net.slightlymagic.ticTacToe.sync.Engine;
+import at.pria.koza.harmonic.AEntity;
+import at.pria.koza.harmonic.Engine;
 
 
 /**

@@ -1,6 +1,7 @@
 package ticTacToe;
 
 import "at/pria/koza/polybuf/polybuf.proto";
+import "at/pria/koza/harmonic/harmonic.proto";
 
 option java_package = "net.slightlymagic.ticTacToe.proto";
 option java_outer_classname = "TTTP";

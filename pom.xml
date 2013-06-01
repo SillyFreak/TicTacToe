@@ -52,5 +52,10 @@
    <artifactId>polybuf</artifactId>
    <version>0.0.2</version>
   </dependency>
+  <dependency>
+   <groupId>at.pria.koza</groupId>
+   <artifactId>harmonic</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+  </dependency>
  </dependencies>
 </project>
