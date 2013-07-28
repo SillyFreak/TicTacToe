@@ -7,8 +7,8 @@
 package net.slightlymagic.ticTacToe;
 
 
-import at.pria.koza.harmonic.AEntity;
 import at.pria.koza.harmonic.Engine;
+import at.pria.koza.harmonic.Entity;
 
 
 /**
@@ -19,13 +19,12 @@ import at.pria.koza.harmonic.Engine;
  * @version V0.0 14.05.2013
  * @author SillyFreak
  */
-public class TTTPlayer extends AEntity {
+public class TTTPlayer implements Entity {
     private static final long serialVersionUID = -3201819660675581004L;
     
     private final int         id;
     
     public TTTPlayer(Engine engine, int id) {
-        super(engine);
         this.id = id;
     }
     
