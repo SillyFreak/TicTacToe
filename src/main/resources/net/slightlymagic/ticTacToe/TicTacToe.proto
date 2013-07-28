@@ -16,3 +16,9 @@ message PlacePieceActionP {
 	optional uint32	x		= 3;
 	optional uint32	y		= 4;
 }
+
+message NewGameActionP {
+	extend polybuf.Obj {
+		optional NewGameActionP new_game_action = 102;
+	}
+}

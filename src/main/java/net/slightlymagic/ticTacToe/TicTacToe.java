@@ -10,6 +10,7 @@ package net.slightlymagic.ticTacToe;
 import java.io.IOException;
 import java.util.Scanner;
 
+import net.slightlymagic.ticTacToe.action.NewGameAction;
 import net.slightlymagic.ticTacToe.action.PlacePieceAction;
 import at.pria.koza.harmonic.Action;
 import at.pria.koza.harmonic.Engine;
@@ -34,8 +35,18 @@ public class TicTacToe {
             PolybufConfig conf1 = config(eng1), conf2 = config(eng2);
             
             
-            TTTGame game1 = new TTTGame(eng1);
-            TTTGame game2 = new TTTGame(eng2);
+            TTTGame game1, game2;
+            {
+                NewGameAction action1 = new NewGameAction(eng1);
+                action1.apply();
+                game1 = action1.getGame();
+                
+                Obj obj = new PolybufOutput(conf1).writeObject(action1);
+                
+                NewGameAction action2 = (NewGameAction) new PolybufInput(conf2).readObject(obj);
+                action2.apply();
+                game2 = action2.getGame();
+            }
             while(game2.isGameRunning()) {
                 int x = sc.nextInt(), y = sc.nextInt();
                 
@@ -61,6 +72,7 @@ public class TicTacToe {
         PolybufConfig config = new PolybufConfig();
         
         PlacePieceAction.configure(config, engine);
+        NewGameAction.configure(config, engine);
         
         return config;
     }
