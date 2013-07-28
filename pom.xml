@@ -7,14 +7,14 @@
  <version>0.0.1-SNAPSHOT</version>
  <name>TicTacToe</name>
  <description>TicTacToe</description>
- 
+
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   <maven.compiler.source>1.7</maven.compiler.source>
   <maven.compiler.target>1.7</maven.compiler.target>
   <aspectjVer>1.7.3</aspectjVer>
  </properties>
- 
+
  <build>
   <pluginManagement>
    <plugins>
@@ -78,6 +78,12 @@
     <configuration>
      <source>${maven.compiler.source}</source>
      <target>${maven.compiler.target}</target>
+     <aspectLibraries>
+      <aspectLibrary>
+       <groupId>at.pria.koza</groupId>
+       <artifactId>harmonic</artifactId>
+      </aspectLibrary>
+     </aspectLibraries>
     </configuration>
     <dependencies>
      <dependency>
