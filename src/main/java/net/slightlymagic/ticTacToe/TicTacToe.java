@@ -14,6 +14,7 @@ import net.slightlymagic.ticTacToe.action.NewGameAction;
 import net.slightlymagic.ticTacToe.action.PlacePieceAction;
 import at.pria.koza.harmonic.Action;
 import at.pria.koza.harmonic.Engine;
+import at.pria.koza.harmonic.State;
 import at.pria.koza.polybuf.PolybufConfig;
 import at.pria.koza.polybuf.PolybufInput;
 import at.pria.koza.polybuf.PolybufOutput;
@@ -38,25 +39,23 @@ public class TicTacToe {
             TTTGame game1, game2;
             {
                 NewGameAction action1 = new NewGameAction(eng1);
-                action1.apply();
-                game1 = action1.getGame();
+                game1 = eng1.execute(action1).getGame();
                 
                 Obj obj = new PolybufOutput(conf1).writeObject(action1);
                 
                 NewGameAction action2 = (NewGameAction) new PolybufInput(conf2).readObject(obj);
-                action2.apply();
-                game2 = action2.getGame();
+                game2 = eng2.execute(action2).getGame();
             }
             while(game2.isGameRunning()) {
                 int x = sc.nextInt(), y = sc.nextInt();
                 
                 Action action1 = new PlacePieceAction(eng1, game1, game1.getNextPlayer(), x, y);
-                action1.apply();
+                eng1.execute(action1);
                 
                 Obj obj = new PolybufOutput(conf1).writeObject(action1);
                 
                 Action action2 = (Action) new PolybufInput(conf2).readObject(obj);
-                action2.apply();
+                eng2.execute(action2);
                 
                 
                 System.out.printf("%s%s%s|%n%s%s%s|%n%s%s%s|%n", //
@@ -65,6 +64,14 @@ public class TicTacToe {
                         p(game2, 0, 2), p(game2, 1, 2), p(game2, 2, 2));
             }
             System.out.println("===# " + game2.getWinner().getPlayerId());
+            
+            System.out.println(eng1);
+            for(State s = eng1.getHead().getState(); s != null; s = s.getParent())
+                System.out.println(s);
+            
+            System.out.println(eng2);
+            for(State s = eng2.getHead().getState(); s != null; s = s.getParent())
+                System.out.println(s);
         }
     }
     
