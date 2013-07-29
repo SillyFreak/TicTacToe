@@ -39,23 +39,23 @@ public class TicTacToe {
             TTTGame game1, game2;
             {
                 NewGameAction action1 = new NewGameAction(eng1);
-                game1 = eng1.execute(action1).getGame();
+                game1 = execute(action1).getGame();
                 
                 Obj obj = new PolybufOutput(conf1).writeObject(action1);
                 
                 NewGameAction action2 = (NewGameAction) new PolybufInput(conf2).readObject(obj);
-                game2 = eng2.execute(action2).getGame();
+                game2 = execute(action2).getGame();
             }
             while(game2.isGameRunning()) {
                 int x = sc.nextInt(), y = sc.nextInt();
                 
                 Action action1 = new PlacePieceAction(eng1, game1, game1.getNextPlayer(), x, y);
-                eng1.execute(action1);
+                execute(action1);
                 
                 Obj obj = new PolybufOutput(conf1).writeObject(action1);
                 
                 Action action2 = (Action) new PolybufInput(conf2).readObject(obj);
-                eng2.execute(action2);
+                execute(action2);
                 
                 
                 System.out.printf("%s%s%s|%n%s%s%s|%n%s%s%s|%n", //
@@ -66,11 +66,11 @@ public class TicTacToe {
             System.out.println("===# " + game2.getWinner().getPlayerId());
             
             System.out.println(eng1);
-            for(State s = eng1.getHead().getState(); s != null; s = s.getParent())
+            for(State s = eng1.getHead(); s != null; s = s.getParent())
                 System.out.println(s);
             
             System.out.println(eng2);
-            for(State s = eng2.getHead().getState(); s != null; s = s.getParent())
+            for(State s = eng2.getHead(); s != null; s = s.getParent())
                 System.out.println(s);
         }
     }
@@ -82,6 +82,13 @@ public class TicTacToe {
         NewGameAction.configure(config, engine);
         
         return config;
+    }
+    
+    private static <T extends Action> T execute(T action) {
+        Engine engine = action.getEngine();
+        State state = new State(engine.getHead(), action);
+        engine.setHead(state);
+        return action;
     }
     
     private static String p(TTTGame game, int x, int y) {
