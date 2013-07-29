@@ -32,7 +32,7 @@ import at.pria.koza.polybuf.proto.Polybuf.Obj;
 public class TicTacToe {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         try (Scanner sc = new Scanner(System.in);) {
-            Engine eng1 = new Engine(), eng2 = new Engine();
+            Engine eng1 = new Engine(), eng2 = new Engine(true);
             PolybufConfig conf1 = config(eng1), conf2 = config(eng2);
             
             
