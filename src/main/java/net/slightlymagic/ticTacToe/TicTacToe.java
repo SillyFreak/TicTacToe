@@ -41,10 +41,11 @@ public class TicTacToe {
                 NewGameAction action1 = new NewGameAction(eng1);
                 game1 = execute(action1).getGame();
                 
-                Obj obj = new PolybufOutput(conf1).writeObject(action1);
+                Obj obj = new PolybufOutput(conf1).writeObject(eng1.getHead());
                 
-                NewGameAction action2 = (NewGameAction) new PolybufInput(conf2).readObject(obj);
-                game2 = execute(action2).getGame();
+                State s = (State) new PolybufInput(conf2).readObject(obj);
+                eng2.setHead(s);
+                game2 = ((NewGameAction) s.getAction()).getGame();
             }
             while(game2.isGameRunning()) {
                 int x = sc.nextInt(), y = sc.nextInt();
@@ -52,11 +53,10 @@ public class TicTacToe {
                 Action action1 = new PlacePieceAction(eng1, game1, game1.getNextPlayer(), x, y);
                 execute(action1);
                 
-                Obj obj = new PolybufOutput(conf1).writeObject(action1);
+                Obj obj = new PolybufOutput(conf1).writeObject(eng1.getHead());
                 
-                Action action2 = (Action) new PolybufInput(conf2).readObject(obj);
-                execute(action2);
-                
+                State s = (State) new PolybufInput(conf2).readObject(obj);
+                eng2.setHead(s);
                 
                 System.out.printf("%s%s%s|%n%s%s%s|%n%s%s%s|%n", //
                         p(game2, 0, 0), p(game2, 1, 0), p(game2, 2, 0), //
@@ -80,6 +80,7 @@ public class TicTacToe {
         
         PlacePieceAction.configure(config, engine);
         NewGameAction.configure(config, engine);
+        State.configure(config, engine);
         
         return config;
     }
