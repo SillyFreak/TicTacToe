@@ -8,11 +8,17 @@ option java_outer_classname = "TTTP";
 
 message PlacePieceActionP {
 	extend polybuf.Obj {
-		optional PlacePieceActionP place_piece_action = 101;
+		optional PlacePieceActionP place_piece_action = 200;
 	}
 	
 	optional uint32	game	= 1;
 	optional uint32	player	= 2;
 	optional uint32	x		= 3;
 	optional uint32	y		= 4;
+}
+
+message NewGameActionP {
+	extend polybuf.Obj {
+		optional NewGameActionP new_game_action = 201;
+	}
 }

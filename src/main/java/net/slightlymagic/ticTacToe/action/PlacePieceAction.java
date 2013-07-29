@@ -86,8 +86,8 @@ public class PlacePieceAction extends Action implements PolybufSerializable {
         @Override
         public PlacePieceAction initialize(PolybufInput in, Obj obj) throws PolybufException {
             PlacePieceActionP p = obj.getExtension(EXTENSION);
-            TTTGame game = (TTTGame) engine.get(p.getGame());
-            TTTPlayer player = (TTTPlayer) engine.get(p.getPlayer());
+            TTTGame game = (TTTGame) engine.getEntity(p.getGame());
+            TTTPlayer player = (TTTPlayer) engine.getEntity(p.getPlayer());
             int x = p.getX(), y = p.getY();
             
             return new PlacePieceAction(engine, game, player, x, y);
