@@ -110,7 +110,7 @@
   <dependency>
    <groupId>at.pria.koza</groupId>
    <artifactId>harmonic</artifactId>
-   <version>0.0.4</version>
+   <version>0.0.4-SNAPSHOT</version>
   </dependency>
  </dependencies>
 </project>
