@@ -7,10 +7,12 @@
 package net.slightlymagic.ticTacToe;
 
 
+import static at.pria.koza.harmonic.BranchManager.*;
 import net.slightlymagic.ticTacToe.action.NewGameAction;
 import at.pria.koza.harmonic.BranchManager;
 import at.pria.koza.harmonic.BranchManager.SyncCallback;
 import at.pria.koza.harmonic.Engine;
+import at.pria.koza.polybuf.PolybufConfig;
 import at.pria.koza.polybuf.proto.Polybuf.Obj;
 
 
@@ -25,18 +27,16 @@ import at.pria.koza.polybuf.proto.Polybuf.Obj;
 public class Host {
     private static final String TAG_NEW_GAME = "tag-newGame";
     
-    private final Engine        eng;
     private final BranchManager mgr;
     
     private TTTGame             game;
     
     public Host() {
         mgr = new BranchManager();
-        eng = mgr.getEngine();
     }
     
     public void newGame() {
-        NewGameAction action = new NewGameAction(eng);
+        NewGameAction action = new NewGameAction(mgr.getEngine());
         mgr.execute(action);
         mgr.createBranchHere(TAG_NEW_GAME);
         initGame();
@@ -44,15 +44,29 @@ public class Host {
     
     public void connectToGame(final Host other) {
         new LocalSyncCallback(other.mgr, this.mgr).sendUpdate(TAG_NEW_GAME);
+        mgr.setCurrentBranch(TAG_NEW_GAME);
         initGame();
     }
     
     public void synchronize(final Host other) {
-        new LocalSyncCallback(other.mgr, this.mgr).sendUpdate("default");
+        new LocalSyncCallback(other.mgr, this.mgr).sendUpdate(BRANCH_DEFAULT);
+        mgr.setCurrentBranch(BRANCH_DEFAULT);
     }
     
     private void initGame() {
         game = ((NewGameAction) mgr.getBranchTip(TAG_NEW_GAME).getAction()).getGame();
+    }
+    
+    public BranchManager getBranchManager() {
+        return mgr;
+    }
+    
+    public Engine getEngine() {
+        return mgr.getEngine();
+    }
+    
+    public PolybufConfig getConfig() {
+        return mgr.getConfig();
     }
     
     public TTTGame getGame() {

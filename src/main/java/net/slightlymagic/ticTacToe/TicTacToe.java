@@ -13,12 +13,9 @@ import java.util.Scanner;
 import net.slightlymagic.ticTacToe.action.NewGameAction;
 import net.slightlymagic.ticTacToe.action.PlacePieceAction;
 import at.pria.koza.harmonic.Action;
-import at.pria.koza.harmonic.BranchManager;
-import at.pria.koza.harmonic.BranchManager.SyncCallback;
 import at.pria.koza.harmonic.Engine;
 import at.pria.koza.harmonic.State;
 import at.pria.koza.polybuf.PolybufConfig;
-import at.pria.koza.polybuf.proto.Polybuf.Obj;
 
 
 /**
@@ -32,27 +29,21 @@ import at.pria.koza.polybuf.proto.Polybuf.Obj;
 public class TicTacToe {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         try (Scanner sc = new Scanner(System.in);) {
-            BranchManager mgr1 = new BranchManager(), mgr2 = new BranchManager();
-            Engine eng1 = mgr1.getEngine(), eng2 = mgr2.getEngine();
-            config(mgr1);
-            config(mgr2);
+            Host host1 = new Host(), host2 = new Host();
+            config(host1);
+            config(host2);
             
+            host1.newGame();
+            host2.connectToGame(host1);
+            TTTGame game1 = host1.getGame(), game2 = host2.getGame();
             
-            TTTGame game1, game2;
-            {
-                NewGameAction action1 = new NewGameAction(eng1);
-                game1 = mgr1.execute(action1).getGame();
-                
-                NewGameAction action2 = update(mgr1, mgr2, "default");
-                game2 = action2.getGame();
-            }
             while(game2.isGameRunning()) {
                 int x = sc.nextInt(), y = sc.nextInt();
                 
-                Action action1 = new PlacePieceAction(eng1, game1, game1.getNextPlayer(), x, y);
-                mgr1.execute(action1);
+                Action action = new PlacePieceAction(host1.getEngine(), game1, game1.getNextPlayer(), x, y);
+                host1.getBranchManager().execute(action);
                 
-                update(mgr1, mgr2, "default");
+                host2.synchronize(host1);
                 
                 System.out.printf("%s%s%s|%n%s%s%s|%n%s%s%s|%n", //
                         p(game2, 0, 0), p(game2, 1, 0), p(game2, 2, 0), //
@@ -61,41 +52,22 @@ public class TicTacToe {
             }
             System.out.println("===# " + game2.getWinner().getPlayerId());
             
-            System.out.println(eng1);
-            for(State s = eng1.getHead(); s != null; s = s.getParent())
+            System.out.println(host1.getEngine());
+            for(State s = host1.getEngine().getHead(); s != null; s = s.getParent())
                 System.out.println(s);
             
-            System.out.println(eng2);
-            for(State s = eng2.getHead(); s != null; s = s.getParent())
+            System.out.println(host2.getEngine());
+            for(State s = host2.getEngine().getHead(); s != null; s = s.getParent())
                 System.out.println(s);
         }
     }
     
-    private static void config(BranchManager mgr) {
-        Engine engine = mgr.getEngine();
-        PolybufConfig config = mgr.getConfig();
+    private static void config(Host host) {
+        Engine engine = host.getEngine();
+        PolybufConfig config = host.getConfig();
         
         PlacePieceAction.configure(config, engine);
         NewGameAction.configure(config, engine);
-    }
-    
-    @SuppressWarnings("unchecked")
-    private static <T extends Action> T update(final BranchManager sender, final BranchManager receiver, final String branch) {
-        SyncCallback callback = new SyncCallback() {
-            @Override
-            public void sendUpdateCallback(int engine, String branch, Obj state, long... ancestors) {
-                long result = receiver.receiveUpdate(engine, branch, state, ancestors);
-                sender.sendMissing(receiver.getEngine().getId(), branch, result, this);
-            }
-            
-            @Override
-            public void sendMissingCallback(int engine, String branch, long state, Obj... ancestors) {
-                receiver.receiveMissing(engine, branch, state, ancestors);
-            }
-        };
-        
-        sender.sendUpdate(receiver.getEngine().getId(), branch, callback);
-        return (T) receiver.getEngine().getHead().getAction();
     }
     
     private static String p(TTTGame game, int x, int y) {
