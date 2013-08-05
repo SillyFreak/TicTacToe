@@ -9,11 +9,13 @@ package net.slightlymagic.ticTacToe;
 
 import static at.pria.koza.harmonic.BranchManager.*;
 import net.slightlymagic.ticTacToe.action.NewGameAction;
+
+import org.jgroups.JChannel;
+
 import at.pria.koza.harmonic.BranchManager;
-import at.pria.koza.harmonic.BranchManager.SyncCallback;
 import at.pria.koza.harmonic.Engine;
+import at.pria.koza.harmonic.jGroups.JGroupsBranchAdapter;
 import at.pria.koza.polybuf.PolybufConfig;
-import at.pria.koza.polybuf.proto.Polybuf.Obj;
 
 
 /**
@@ -25,14 +27,17 @@ import at.pria.koza.polybuf.proto.Polybuf.Obj;
  * @author SillyFreak
  */
 public class Host {
-    private static final String TAG_NEW_GAME = "tag-newGame";
+    public static final String         TAG_NEW_GAME = "tag-newGame";
     
-    private final BranchManager mgr;
+    private final BranchManager        mgr;
+    private final JGroupsBranchAdapter adapter;
     
-    private TTTGame             game;
+    private TTTGame                    game;
     
-    public Host() {
+    public Host(JChannel ch) {
         mgr = new BranchManager();
+        adapter = new JGroupsBranchAdapter(ch, mgr);
+        ch.setReceiver(adapter);
     }
     
     public void newGame() {
@@ -42,15 +47,15 @@ public class Host {
         initGame();
     }
     
-    public void connectToGame(final Host other) {
-        new LocalSyncCallback(other.mgr, this.mgr).sendUpdate(TAG_NEW_GAME);
+    public void connectToGame() {
+//        new LocalSyncCallback(other.mgr, this.mgr).sendUpdate(TAG_NEW_GAME);
         mgr.setCurrentBranch(TAG_NEW_GAME);
         initGame();
+        mgr.setCurrentBranch(BRANCH_DEFAULT);
     }
     
-    public void synchronize(final Host other) {
-        new LocalSyncCallback(other.mgr, this.mgr).sendUpdate(BRANCH_DEFAULT);
-        mgr.setCurrentBranch(BRANCH_DEFAULT);
+    public void publish(int other, String branch) {
+        adapter.sendUpdate(null, other, branch);
     }
     
     private void initGame() {
@@ -73,27 +78,35 @@ public class Host {
         return game;
     }
     
-    private static class LocalSyncCallback implements SyncCallback {
-        private final BranchManager sender, receiver;
-        
-        private LocalSyncCallback(BranchManager sender, BranchManager receiver) {
-            this.sender = sender;
-            this.receiver = receiver;
-        }
-        
-        public void sendUpdate(String branch) {
-            sender.sendUpdate(receiver.getEngine().getId(), branch, this);
-        }
-        
-        @Override
-        public void sendUpdateCallback(int engine, String branch, Obj state, long... ancestors) {
-            long result = receiver.receiveUpdate(engine, branch, state, ancestors);
-            sender.sendMissing(receiver.getEngine().getId(), branch, result, this);
-        }
-        
-        @Override
-        public void sendMissingCallback(int engine, String branch, long state, Obj... ancestors) {
-            receiver.receiveMissing(engine, branch, state, ancestors);
-        }
+    public JGroupsBranchAdapter getAdapter() {
+        return adapter;
     }
+    
+//    private static class LocalSyncCallback implements SyncCallback {
+//        private final BranchManager sender, receiver;
+//        
+//        private LocalSyncCallback(BranchManager sender, BranchManager receiver) {
+//            this.sender = sender;
+//            this.receiver = receiver;
+//        }
+//        
+//        public void sendUpdate(String branch) {
+//            sender.sendUpdate(receiver.getEngine().getId(), branch, this);
+//        }
+//        
+//        @Override
+//        public void sendUpdateCallback(int engine, String branch, Obj state, long... ancestors) {
+//            receiver.receiveUpdate(engine, branch, state, ancestors, this);
+//        }
+//        
+//        @Override
+//        public void receiveUpdateCallback(int engine, String branch, long ancestor) {
+//            sender.sendMissing(receiver.getEngine().getId(), branch, ancestor, this);
+//        }
+//        
+//        @Override
+//        public void sendMissingCallback(int engine, String branch, long state, Obj... ancestors) {
+//            receiver.receiveMissing(engine, branch, state, ancestors);
+//        }
+//    }
 }
