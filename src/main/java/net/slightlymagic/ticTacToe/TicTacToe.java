@@ -7,14 +7,18 @@
 package net.slightlymagic.ticTacToe;
 
 
-import java.io.IOException;
 import java.util.Scanner;
 
 import net.slightlymagic.ticTacToe.action.NewGameAction;
 import net.slightlymagic.ticTacToe.action.PlacePieceAction;
+
+import org.jgroups.JChannel;
+
 import at.pria.koza.harmonic.Action;
+import at.pria.koza.harmonic.BranchManager;
 import at.pria.koza.harmonic.Engine;
 import at.pria.koza.harmonic.State;
+import at.pria.koza.harmonic.jGroups.JGroupsBranchAdapter;
 import at.pria.koza.polybuf.PolybufConfig;
 
 
@@ -27,19 +31,34 @@ import at.pria.koza.polybuf.PolybufConfig;
  * @author SillyFreak
  */
 public class TicTacToe {
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws Exception {
         try (Scanner sc = new Scanner(System.in);) {
-            Host host1 = new Host(), host2 = new Host();
+            Host host1, host2;
+            {
+                JChannel ch = new JChannel();
+                ch.setDiscardOwnMessages(true);
+                host1 = new Host(ch);
+                ch.connect("ticTacToe");
+            }
+            {
+                JChannel ch = new JChannel();
+                ch.setDiscardOwnMessages(true);
+                host2 = new Host(ch);
+                ch.connect("ticTacToe");
+            }
             config(host1);
             config(host2);
             
             host1.newGame();
-            host2.connectToGame(host1);
+            host1.publish(host2.getEngine().getId(), BranchManager.BRANCH_DEFAULT);
+            Thread.sleep(500);
+            host2.connectToGame();
             
             for(int i = 0;; i++) {
                 if(i % 2 == 0) {
                     makeMove(host1, sc);
-                    host2.synchronize(host1);
+                    host1.publish(host2.getEngine().getId(), BranchManager.BRANCH_DEFAULT);
+                    Thread.sleep(500);
                     
                     if(!host2.getGame().isGameRunning()) {
                         print(host2.getGame());
@@ -48,7 +67,8 @@ public class TicTacToe {
                     }
                 } else {
                     makeMove(host2, sc);
-                    host1.synchronize(host2);
+                    host2.publish(host1.getEngine().getId(), BranchManager.BRANCH_DEFAULT);
+                    Thread.sleep(500);
                     
                     if(!host1.getGame().isGameRunning()) {
                         print(host1.getGame());
@@ -86,11 +106,17 @@ public class TicTacToe {
     }
     
     private static void config(Host host) {
-        Engine engine = host.getEngine();
-        PolybufConfig config = host.getConfig();
+        JGroupsBranchAdapter adapter = host.getAdapter();
+        BranchManager mgr = host.getBranchManager();
+        Engine engine = mgr.getEngine();
+        PolybufConfig config = engine.getConfig();
         
+        mgr.configure(config);
         PlacePieceAction.configure(config, engine);
         NewGameAction.configure(config, engine);
+        
+        adapter.register(PlacePieceAction.EXTENSION);
+        adapter.register(NewGameAction.EXTENSION);
     }
     
     private static String p(TTTGame game, int x, int y) {
