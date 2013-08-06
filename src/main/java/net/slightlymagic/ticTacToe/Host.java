@@ -7,7 +7,6 @@
 package net.slightlymagic.ticTacToe;
 
 
-import static at.pria.koza.harmonic.BranchManager.*;
 import net.slightlymagic.ticTacToe.action.NewGameAction;
 
 import org.jgroups.JChannel;
@@ -27,8 +26,6 @@ import at.pria.koza.polybuf.PolybufConfig;
  * @author SillyFreak
  */
 public class Host {
-    public static final String         TAG_NEW_GAME = "tag-newGame";
-    
     private final BranchManager        mgr;
     private final JGroupsBranchAdapter adapter;
     
@@ -43,15 +40,12 @@ public class Host {
     public void newGame() {
         NewGameAction action = new NewGameAction(mgr.getEngine());
         mgr.execute(action);
-        mgr.createBranchHere(TAG_NEW_GAME);
         initGame();
     }
     
     public void connectToGame() {
 //        new LocalSyncCallback(other.mgr, this.mgr).sendUpdate(TAG_NEW_GAME);
-        mgr.setCurrentBranch(TAG_NEW_GAME);
         initGame();
-        mgr.setCurrentBranch(BRANCH_DEFAULT);
     }
     
     public void publish(int other, String branch) {
@@ -59,7 +53,7 @@ public class Host {
     }
     
     private void initGame() {
-        game = ((NewGameAction) mgr.getBranchTip(TAG_NEW_GAME).getAction()).getGame();
+        game = (TTTGame) mgr.getEngine().getEntity(0);
     }
     
     public BranchManager getBranchManager() {
@@ -71,7 +65,7 @@ public class Host {
     }
     
     public PolybufConfig getConfig() {
-        return mgr.getConfig();
+        return mgr.getEngine().getConfig();
     }
     
     public TTTGame getGame() {

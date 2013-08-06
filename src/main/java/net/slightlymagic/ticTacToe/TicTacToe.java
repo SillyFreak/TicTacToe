@@ -50,7 +50,6 @@ public class TicTacToe {
             config(host2);
             
             host1.newGame();
-            host1.publish(host2.getEngine().getId(), Host.TAG_NEW_GAME);
             host1.publish(host2.getEngine().getId(), BranchManager.BRANCH_DEFAULT);
             Thread.sleep(500);
             host2.connectToGame();
@@ -69,6 +68,7 @@ public class TicTacToe {
                 } else {
                     makeMove(host2, sc);
                     host2.publish(host1.getEngine().getId(), BranchManager.BRANCH_DEFAULT);
+                    Thread.sleep(500);
                     
                     if(!host1.getGame().isGameRunning()) {
                         print(host1.getGame());
@@ -106,10 +106,12 @@ public class TicTacToe {
     }
     
     private static void config(Host host) {
-        Engine engine = host.getEngine();
-        PolybufConfig config = host.getConfig();
         JGroupsBranchAdapter adapter = host.getAdapter();
+        BranchManager mgr = host.getBranchManager();
+        Engine engine = mgr.getEngine();
+        PolybufConfig config = engine.getConfig();
         
+        mgr.configure(config);
         PlacePieceAction.configure(config, engine);
         NewGameAction.configure(config, engine);
         
