@@ -39,7 +39,7 @@ public class NewGameAction extends Action implements PolybufSerializable {
     }
     
     public static void configure(PolybufConfig config, Engine engine) {
-        config.put(FIELD, getIO(engine));
+        config.add(getIO(engine));
     }
     
     private TTTGame game;
@@ -67,6 +67,16 @@ public class NewGameAction extends Action implements PolybufSerializable {
         
         public IO(Engine engine) {
             this.engine = engine;
+        }
+        
+        @Override
+        public int getType() {
+            return FIELD;
+        }
+        
+        @Override
+        public GeneratedExtension<Obj, ?> getExtension() {
+            return EXTENSION;
         }
         
         @Override

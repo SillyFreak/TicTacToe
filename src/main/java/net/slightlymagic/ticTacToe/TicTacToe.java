@@ -18,7 +18,6 @@ import at.pria.koza.harmonic.Action;
 import at.pria.koza.harmonic.BranchManager;
 import at.pria.koza.harmonic.Engine;
 import at.pria.koza.harmonic.State;
-import at.pria.koza.harmonic.jGroups.JGroupsBranchAdapter;
 import at.pria.koza.polybuf.PolybufConfig;
 
 
@@ -39,15 +38,15 @@ public class TicTacToe {
                 ch.setDiscardOwnMessages(true);
                 host1 = new Host(ch);
                 ch.connect("ticTacToe");
+                config(host1);
             }
             {
                 JChannel ch = new JChannel();
                 ch.setDiscardOwnMessages(true);
                 host2 = new Host(ch);
                 ch.connect("ticTacToe");
+                config(host2);
             }
-            config(host1);
-            config(host2);
             
             host1.newGame();
             host1.publish(host2.getEngine().getId(), BranchManager.BRANCH_DEFAULT);
@@ -106,7 +105,6 @@ public class TicTacToe {
     }
     
     private static void config(Host host) {
-        JGroupsBranchAdapter adapter = host.getAdapter();
         BranchManager mgr = host.getBranchManager();
         Engine engine = mgr.getEngine();
         PolybufConfig config = engine.getConfig();
@@ -114,9 +112,6 @@ public class TicTacToe {
         mgr.configure(config);
         PlacePieceAction.configure(config, engine);
         NewGameAction.configure(config, engine);
-        
-        adapter.register(PlacePieceAction.EXTENSION);
-        adapter.register(NewGameAction.EXTENSION);
     }
     
     private static String p(TTTGame game, int x, int y) {
