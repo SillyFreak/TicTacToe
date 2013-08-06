@@ -114,12 +114,12 @@
   <dependency>
    <groupId>at.pria.koza</groupId>
    <artifactId>polybuf</artifactId>
-   <version>0.0.3-SNAPSHOT</version>
+   <version>0.0.4</version>
   </dependency>
   <dependency>
    <groupId>at.pria.koza</groupId>
    <artifactId>harmonic</artifactId>
-   <version>0.0.5-SNAPSHOT</version>
+   <version>0.0.6</version>
   </dependency>
  </dependencies>
 </project>
