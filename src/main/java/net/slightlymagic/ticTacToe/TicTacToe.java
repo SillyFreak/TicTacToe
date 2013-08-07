@@ -7,6 +7,8 @@
 package net.slightlymagic.ticTacToe;
 
 
+import static java.lang.Long.*;
+
 import java.util.Scanner;
 
 import net.slightlymagic.ticTacToe.action.NewGameAction;
@@ -17,6 +19,7 @@ import org.jgroups.JChannel;
 import at.pria.koza.harmonic.Action;
 import at.pria.koza.harmonic.BranchManager;
 import at.pria.koza.harmonic.Engine;
+import at.pria.koza.harmonic.HeadListener;
 import at.pria.koza.harmonic.State;
 import at.pria.koza.polybuf.PolybufConfig;
 
@@ -32,79 +35,51 @@ import at.pria.koza.polybuf.PolybufConfig;
 public class TicTacToe {
     public static void main(String[] args) throws Exception {
         try (Scanner sc = new Scanner(System.in);) {
-            Host host1, host2;
-            {
-                JChannel ch = new JChannel();
-                ch.setDiscardOwnMessages(true);
-                host1 = new Host(ch);
-                ch.connect("ticTacToe");
-                config(host1);
-            }
-            {
-                JChannel ch = new JChannel();
-                ch.setDiscardOwnMessages(true);
-                host2 = new Host(ch);
-                ch.connect("ticTacToe");
-                config(host2);
-            }
+            JChannel ch = new JChannel();
+            ch.setDiscardOwnMessages(true);
+            Host host = new Host(ch);
+            ch.connect("ticTacToe");
+            config(host);
             
-            host1.newGame();
-            host1.publish(host2.getEngine().getId(), BranchManager.BRANCH_DEFAULT);
-            Thread.sleep(500);
-            host2.connectToGame();
+            System.out.printf("I am %08X%n", host.getEngine().getId());
+            System.out.println("who do I play with?");
+            int otherId = (int) parseLong(sc.nextLine(), 0x10);
             
-            for(int i = 0;; i++) {
-                if(i % 2 == 0) {
-                    makeMove(host1, sc);
-                    host1.publish(host2.getEngine().getId(), BranchManager.BRANCH_DEFAULT);
-                    Thread.sleep(500);
-                    
-                    if(!host2.getGame().isGameRunning()) {
-                        print(host2.getGame());
-                        System.out.println("===# " + host2.getGame().getWinner().getPlayerId());
-                        break;
-                    }
-                } else {
-                    makeMove(host2, sc);
-                    host2.publish(host1.getEngine().getId(), BranchManager.BRANCH_DEFAULT);
-                    Thread.sleep(500);
-                    
-                    if(!host1.getGame().isGameRunning()) {
-                        print(host1.getGame());
-                        System.out.println("===# " + host1.getGame().getWinner().getPlayerId());
-                        break;
-                    }
+            System.out.printf("%08X vs %08X%n", host.getEngine().getId(), otherId);
+            do {
+                System.out.println("enter 'start' or 'connect'");
+                String line = sc.nextLine();
+                if("start".equalsIgnoreCase(line)) {
+                    host.newGame();
+                    host.publish(otherId, BranchManager.BRANCH_DEFAULT);
+                } else if("connect".equalsIgnoreCase(line)) {
+                    host.connectToGame();
+                }
+            } while(host.getGame() == null);
+            
+            for(;;) {
+                makeMove(host, sc);
+                host.publish(otherId, BranchManager.BRANCH_DEFAULT);
+                Thread.sleep(500);
+                
+                if(!host.getGame().isGameRunning()) {
+                    print(host.getGame());
+                    System.out.println("===# " + host.getGame().getWinner().getPlayerId());
+                    break;
                 }
             }
-            
-            System.out.println(host1.getEngine());
-            for(State s = host1.getEngine().getHead(); s != null; s = s.getParent())
-                System.out.println(s);
-            
-            System.out.println(host2.getEngine());
-            for(State s = host2.getEngine().getHead(); s != null; s = s.getParent())
-                System.out.println(s);
         }
     }
     
-    private static void makeMove(Host current, Scanner sc) {
-        TTTGame game = current.getGame();
-        print(game);
-        
+    private static void makeMove(Host host, Scanner sc) {
+        TTTGame game = host.getGame();
         int x = sc.nextInt(), y = sc.nextInt();
         
-        Action action = new PlacePieceAction(current.getEngine(), game, game.getNextPlayer(), x, y);
-        current.getBranchManager().execute(action);
+        Action action = new PlacePieceAction(host.getEngine(), game, game.getNextPlayer(), x, y);
+        host.getBranchManager().execute(action);
     }
     
-    private static void print(TTTGame game) {
-        System.out.printf("%s%s%s|%n%s%s%s|%n%s%s%s|%n", //
-                p(game, 0, 0), p(game, 1, 0), p(game, 2, 0), //
-                p(game, 0, 1), p(game, 1, 1), p(game, 2, 1), //
-                p(game, 0, 2), p(game, 1, 2), p(game, 2, 2));
-    }
-    
-    private static void config(Host host) {
+    private static void config(final Host host) {
         BranchManager mgr = host.getBranchManager();
         Engine engine = mgr.getEngine();
         PolybufConfig config = engine.getConfig();
@@ -112,6 +87,20 @@ public class TicTacToe {
         mgr.configure(config);
         PlacePieceAction.configure(config, engine);
         NewGameAction.configure(config, engine);
+        
+        engine.addHeadListener(new HeadListener() {
+            @Override
+            public void headMoved(State prevHead, State newHead) {
+                if(host.getGame() != null) print(host.getGame());
+            }
+        });
+    }
+    
+    private static void print(TTTGame game) {
+        System.out.printf("%s%s%s|%n%s%s%s|%n%s%s%s|%n", //
+                p(game, 0, 0), p(game, 1, 0), p(game, 2, 0), //
+                p(game, 0, 1), p(game, 1, 1), p(game, 2, 1), //
+                p(game, 0, 2), p(game, 1, 2), p(game, 2, 2));
     }
     
     private static String p(TTTGame game, int x, int y) {
