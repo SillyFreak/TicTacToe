@@ -7,8 +7,6 @@
 package net.slightlymagic.ticTacToe;
 
 
-import static java.lang.Long.*;
-
 import java.util.Scanner;
 
 import net.slightlymagic.ticTacToe.action.NewGameAction;
@@ -35,22 +33,18 @@ public class TicTacToe {
             Host host = config("ticTacToe");
             
             System.out.printf("I am %08X%n", host.getEngine().getId());
-            System.out.println("who do I play with?");
-            int otherId = (int) parseLong(sc.nextLine(), 0x10);
-            
-            System.out.printf("%08X vs %08X%n", host.getEngine().getId(), otherId);
             do {
                 System.out.println("enter 'start' to start a game, or press enter when your partner has started the game");
                 String line = sc.nextLine();
                 if("start".equalsIgnoreCase(line)) {
                     host.newGame();
-                    host.publish(otherId, BranchManager.BRANCH_DEFAULT);
+                    host.publish(0, BranchManager.BRANCH_DEFAULT);
                 }
             } while(host.getGame() == null);
             
             for(;;) {
                 makeMove(host, sc);
-                host.publish(otherId, BranchManager.BRANCH_DEFAULT);
+                host.publish(0, BranchManager.BRANCH_DEFAULT);
             }
         }
     }
