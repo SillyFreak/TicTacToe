@@ -13,9 +13,6 @@ import java.util.Scanner;
 
 import net.slightlymagic.ticTacToe.action.NewGameAction;
 import net.slightlymagic.ticTacToe.action.PlacePieceAction;
-
-import org.jgroups.JChannel;
-
 import at.pria.koza.harmonic.Action;
 import at.pria.koza.harmonic.BranchManager;
 import at.pria.koza.harmonic.Engine;
@@ -35,11 +32,7 @@ import at.pria.koza.polybuf.PolybufConfig;
 public class TicTacToe {
     public static void main(String[] args) throws Exception {
         try (Scanner sc = new Scanner(System.in);) {
-            JChannel ch = new JChannel();
-            ch.setDiscardOwnMessages(true);
-            Host host = new Host(ch);
-            ch.connect("ticTacToe");
-            config(host);
+            Host host = config("ticTacToe");
             
             System.out.printf("I am %08X%n", host.getEngine().getId());
             System.out.println("who do I play with?");
@@ -70,7 +63,9 @@ public class TicTacToe {
         host.getBranchManager().execute(action);
     }
     
-    private static void config(final Host host) {
+    private static Host config(String cluster) throws Exception {
+        final Host host = new Host(cluster);
+        
         BranchManager mgr = host.getBranchManager();
         Engine engine = mgr.getEngine();
         PolybufConfig config = engine.getConfig();
@@ -88,6 +83,7 @@ public class TicTacToe {
                 }
             }
         });
+        return host;
     }
     
     private static void print(TTTGame game) {

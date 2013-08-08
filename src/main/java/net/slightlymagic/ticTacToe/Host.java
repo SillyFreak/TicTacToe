@@ -28,10 +28,14 @@ public class Host {
     private final BranchManager        mgr;
     private final JGroupsBranchAdapter adapter;
     
-    public Host(JChannel ch) {
+    public Host(String cluster) throws Exception {
         mgr = new BranchManager();
+        
+        JChannel ch = new JChannel();
+        ch.setDiscardOwnMessages(true);
         adapter = new JGroupsBranchAdapter(ch, mgr);
         ch.setReceiver(adapter);
+        ch.connect(cluster);
     }
     
     public void newGame() {
