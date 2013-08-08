@@ -40,20 +40,10 @@ public class Host {
     public void newGame() {
         NewGameAction action = new NewGameAction(mgr.getEngine());
         mgr.execute(action);
-        initGame();
-    }
-    
-    public void connectToGame() {
-//        new LocalSyncCallback(other.mgr, this.mgr).sendUpdate(TAG_NEW_GAME);
-        initGame();
     }
     
     public void publish(int other, String branch) {
         adapter.sendUpdate(null, other, branch);
-    }
-    
-    private void initGame() {
-        game = (TTTGame) mgr.getEngine().getEntity(0);
     }
     
     public BranchManager getBranchManager() {
@@ -69,7 +59,7 @@ public class Host {
     }
     
     public TTTGame getGame() {
-        return game;
+        return (TTTGame) mgr.getEngine().getEntity(0);
     }
     
     public JGroupsBranchAdapter getAdapter() {

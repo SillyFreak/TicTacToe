@@ -47,26 +47,17 @@ public class TicTacToe {
             
             System.out.printf("%08X vs %08X%n", host.getEngine().getId(), otherId);
             do {
-                System.out.println("enter 'start' or 'connect'");
+                System.out.println("enter 'start' to start a game, or press enter when your partner has started the game");
                 String line = sc.nextLine();
                 if("start".equalsIgnoreCase(line)) {
                     host.newGame();
                     host.publish(otherId, BranchManager.BRANCH_DEFAULT);
-                } else if("connect".equalsIgnoreCase(line)) {
-                    host.connectToGame();
                 }
             } while(host.getGame() == null);
             
             for(;;) {
                 makeMove(host, sc);
                 host.publish(otherId, BranchManager.BRANCH_DEFAULT);
-                Thread.sleep(500);
-                
-                if(!host.getGame().isGameRunning()) {
-                    print(host.getGame());
-                    System.out.println("===# " + host.getGame().getWinner().getPlayerId());
-                    break;
-                }
             }
         }
     }
@@ -91,7 +82,10 @@ public class TicTacToe {
         engine.addHeadListener(new HeadListener() {
             @Override
             public void headMoved(State prevHead, State newHead) {
-                if(host.getGame() != null) print(host.getGame());
+                print(host.getGame());
+                if(!host.getGame().isGameRunning()) {
+                    System.out.println("===# " + host.getGame().getWinner().getPlayerId());
+                }
             }
         });
     }
