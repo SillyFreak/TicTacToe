@@ -14,7 +14,6 @@ import org.jgroups.JChannel;
 import at.pria.koza.harmonic.BranchManager;
 import at.pria.koza.harmonic.Engine;
 import at.pria.koza.harmonic.jGroups.JGroupsBranchAdapter;
-import at.pria.koza.polybuf.PolybufConfig;
 
 
 /**
@@ -28,8 +27,6 @@ import at.pria.koza.polybuf.PolybufConfig;
 public class Host {
     private final BranchManager        mgr;
     private final JGroupsBranchAdapter adapter;
-    
-    private TTTGame                    game;
     
     public Host(JChannel ch) {
         mgr = new BranchManager();
@@ -54,43 +51,7 @@ public class Host {
         return mgr.getEngine();
     }
     
-    public PolybufConfig getConfig() {
-        return mgr.getEngine().getConfig();
-    }
-    
     public TTTGame getGame() {
         return (TTTGame) mgr.getEngine().getEntity(0);
     }
-    
-    public JGroupsBranchAdapter getAdapter() {
-        return adapter;
-    }
-    
-//    private static class LocalSyncCallback implements SyncCallback {
-//        private final BranchManager sender, receiver;
-//        
-//        private LocalSyncCallback(BranchManager sender, BranchManager receiver) {
-//            this.sender = sender;
-//            this.receiver = receiver;
-//        }
-//        
-//        public void sendUpdate(String branch) {
-//            sender.sendUpdate(receiver.getEngine().getId(), branch, this);
-//        }
-//        
-//        @Override
-//        public void sendUpdateCallback(int engine, String branch, Obj state, long... ancestors) {
-//            receiver.receiveUpdate(engine, branch, state, ancestors, this);
-//        }
-//        
-//        @Override
-//        public void receiveUpdateCallback(int engine, String branch, long ancestor) {
-//            sender.sendMissing(receiver.getEngine().getId(), branch, ancestor, this);
-//        }
-//        
-//        @Override
-//        public void sendMissingCallback(int engine, String branch, long state, Obj... ancestors) {
-//            receiver.receiveMissing(engine, branch, state, ancestors);
-//        }
-//    }
 }
