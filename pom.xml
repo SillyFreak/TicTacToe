@@ -4,7 +4,7 @@
 
  <groupId>net.slightlymagic</groupId>
  <artifactId>TicTacToe</artifactId>
- <version>0.0.1-SNAPSHOT</version>
+ <version>0.1.0</version>
  <name>TicTacToe</name>
  <description>TicTacToe</description>
 
@@ -21,12 +21,12 @@
   <dependency>
    <groupId>at.pria.koza</groupId>
    <artifactId>polybuf</artifactId>
-   <version>0.0.4</version>
+   <version>0.1.0</version>
   </dependency>
   <dependency>
    <groupId>at.pria.koza</groupId>
    <artifactId>harmonic</artifactId>
-   <version>0.0.7</version>
+   <version>0.1.0</version>
   </dependency>
  </dependencies>
 
