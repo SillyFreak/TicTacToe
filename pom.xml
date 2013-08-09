@@ -8,12 +8,90 @@
  <name>TicTacToe</name>
  <description>TicTacToe</description>
 
+ <dependencies>
+  <!--
+    Maven must run with Java 1.6 to read the 1.6 dependency
+    -->
+  <dependency>
+   <groupId>org.jgroups</groupId>
+   <artifactId>jgroups</artifactId>
+   <version>3.2.7.Final</version>
+  </dependency>
+
+  <dependency>
+   <groupId>at.pria.koza</groupId>
+   <artifactId>polybuf</artifactId>
+   <version>0.0.4</version>
+  </dependency>
+  <dependency>
+   <groupId>at.pria.koza</groupId>
+   <artifactId>harmonic</artifactId>
+   <version>0.0.7</version>
+  </dependency>
+ </dependencies>
+
  <properties>
+  <!-- project settings -->
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   <maven.compiler.source>1.7</maven.compiler.source>
   <maven.compiler.target>1.7</maven.compiler.target>
   <aspectjVer>1.7.3</aspectjVer>
+
+  <!-- github settings -->
+  <github.owner>SillyFreak</github.owner>
+  <github.repo>TicTacToe</github.repo>
+  <!-- github scm settings -->
+  <github.connection.r>scm:git:https://github.com/${github.owner}/${github.repo}.git</github.connection.r>
+  <github.connection.rw>scm:git:https://github.com/${github.owner}/${github.repo}.git</github.connection.rw>
+  <github.url>https://github.com/${github.owner}/${github.repo}</github.url>
+  <!-- distribution settings -->
+  <distribution.name>${github.owner}</distribution.name>
+  <distribution.url>file://${basedir}/../MavenRepo</distribution.url>
+  <github.releases>https://github.com/${github.owner}/${github.repo}/releases</github.releases>
+  <!-- repository settings -->
+  <repo.sillyfreak>https://raw.github.com/${github.owner}/MavenRepo/master</repo.sillyfreak>
  </properties>
+
+ <scm>
+  <connection>${github.connection.r}</connection>
+  <developerConnection>${github.connection.rw}</developerConnection>
+  <url>${github.url}</url>
+ </scm>
+
+ <distributionManagement>
+  <repository>
+   <id>${distribution.name}-releases</id>
+   <url>${distribution.url}/releases</url>
+  </repository>
+  <snapshotRepository>
+   <id>${distribution.name}-snapshots</id>
+   <url>${distribution.url}/snapshots</url>
+  </snapshotRepository>
+  <downloadUrl>${github.releases}</downloadUrl>
+ </distributionManagement>
+
+ <repositories>
+  <repository>
+   <id>${distribution.name}-releases</id>
+   <url>${repo.sillyfreak}/releases</url>
+   <releases>
+    <enabled>true</enabled>
+   </releases>
+   <snapshots>
+    <enabled>false</enabled>
+   </snapshots>
+  </repository>
+  <repository>
+   <id>${distribution.name}-snapshots</id>
+   <url>${repo.sillyfreak}/snapshots</url>
+   <releases>
+    <enabled>false</enabled>
+   </releases>
+   <snapshots>
+    <enabled>true</enabled>
+   </snapshots>
+  </repository>
+ </repositories>
 
  <build>
   <pluginManagement>
@@ -98,28 +176,35 @@
      </dependency>
     </dependencies>
    </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-source-plugin</artifactId>
+    <executions>
+     <execution>
+      <id>default-source</id>
+      <phase>package</phase>
+      <goals>
+       <goal>jar-no-fork</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <configuration>
+     <overview>overview.html</overview>
+    </configuration>
+    <executions>
+     <execution>
+      <id>default-javadoc</id>
+      <phase>package</phase>
+      <goals>
+       <goal>jar</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
   </plugins>
  </build>
-
- <dependencies>
-  <!--
-    Maven must run with Java 1.6 to read the 1.6 dependency
-    -->
-  <dependency>
-   <groupId>org.jgroups</groupId>
-   <artifactId>jgroups</artifactId>
-   <version>3.2.7.Final</version>
-  </dependency>
- 
-  <dependency>
-   <groupId>at.pria.koza</groupId>
-   <artifactId>polybuf</artifactId>
-   <version>0.0.4</version>
-  </dependency>
-  <dependency>
-   <groupId>at.pria.koza</groupId>
-   <artifactId>harmonic</artifactId>
-   <version>0.0.7</version>
-  </dependency>
- </dependencies>
 </project>
