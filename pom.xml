@@ -32,6 +32,7 @@
 
  <properties>
   <!-- project settings -->
+  <mainClass>net.slightlymagic.ticTacToe.TicTacToe</mainClass>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   <maven.compiler.source>1.7</maven.compiler.source>
   <maven.compiler.target>1.7</maven.compiler.target>
@@ -204,6 +205,30 @@
       </goals>
      </execution>
     </executions>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-assembly-plugin</artifactId>
+    <version>2.4</version>
+    <executions>
+     <execution>
+      <id>make-assembly</id>
+      <phase>package</phase>
+      <goals>
+       <goal>single</goal>
+      </goals>
+     </execution>
+    </executions>
+    <configuration>
+     <descriptorRefs>
+      <descriptorRef>jar-with-dependencies</descriptorRef>
+     </descriptorRefs>
+     <archive>
+      <manifest>
+       <mainClass>${mainClass}</mainClass>
+      </manifest>
+     </archive>
+    </configuration>
    </plugin>
   </plugins>
  </build>
