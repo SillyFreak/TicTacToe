@@ -7,6 +7,7 @@
 package net.slightlymagic.ticTacToe;
 
 
+import static at.pria.koza.harmonic.BranchManager.*;
 import net.slightlymagic.ticTacToe.action.NewGameAction;
 
 import org.jgroups.JChannel;
@@ -39,8 +40,8 @@ public class Host {
     }
     
     public void newGame() {
-        NewGameAction action = new NewGameAction(mgr.getEngine());
-        mgr.execute(action);
+        mgr.setBranchTip(BRANCH_DEFAULT, mgr.getEngine().getState(0l));
+        mgr.execute(new NewGameAction(mgr.getEngine()));
     }
     
     public void publish(int other, String branch) {
