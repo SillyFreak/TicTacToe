@@ -9,6 +9,7 @@ package net.slightlymagic.ticTacToe;
 
 import at.pria.koza.harmonic.Engine;
 import at.pria.koza.harmonic.Entity;
+import at.pria.koza.harmonic.Modification;
 
 
 /**
@@ -80,18 +81,44 @@ public class TTTGame implements Entity {
     }
     
     public void placePiece(TTTPlayer player, int x, int y) {
-        if(player.getPlayerId() != next) {
-            throw new IllegalArgumentException();
-        }
-        if(x < 0 || x >= 3 || y < 0 || y >= 3) {
-            throw new IllegalArgumentException();
-        }
-        if(getPiece(x, y) != null) {
-            throw new IllegalArgumentException();
+        new PlacePieceModification(player, x, y).apply();
+    }
+    
+    private final class PlacePieceModification extends Modification {
+        private final TTTPlayer player;
+        private final int       x, y;
+        
+        public PlacePieceModification(TTTPlayer player, int x, int y) {
+            this.player = player;
+            this.x = x;
+            this.y = y;
         }
         
-        board.setPiece(x, y, player.newPiece());
-        next = (next + 1) % players.length;
-        winner = -3;
+        @Override
+        protected void apply0() {
+            if(player.getPlayerId() != next) {
+                throw new IllegalArgumentException();
+            }
+            if(x < 0 || x >= 3 || y < 0 || y >= 3) {
+                throw new IllegalArgumentException();
+            }
+            if(getPiece(x, y) != null) {
+                throw new IllegalArgumentException();
+            }
+            
+            //previous piece was null; newPiece() uses modifications
+            board.setPiece(x, y, player.newPiece());
+            //previous next can be computed
+            next = (next + 1) % players.length;
+            //recomputing the winner again does not change the state
+            winner = -3;
+        }
+        
+        @Override
+        protected void revert() {
+            board.setPiece(x, y, null);
+            next = (next + players.length - 1) % players.length;
+            winner = -3;
+        }
     }
 }
