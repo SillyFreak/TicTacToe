@@ -7,6 +7,8 @@
 package net.slightlymagic.ticTacToe;
 
 
+import static at.pria.koza.harmonic.BranchManager.*;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -37,7 +39,7 @@ public class TicTacToePanel extends JPanel {
     
     private final Host        host;
     
-    private final JButton     start;
+    private final JButton     start, undo;
     private final JButton[][] buttons;
     
     public TicTacToePanel(Host host) {
@@ -62,6 +64,9 @@ public class TicTacToePanel extends JPanel {
         start = new JButton(new StartAction());
         add(start, BorderLayout.NORTH);
         
+        undo = new JButton(new UndoAction());
+        add(undo, BorderLayout.SOUTH);
+        
         update();
         host.getEngine().addHeadListener(new UpdateListener());
     }
@@ -69,6 +74,7 @@ public class TicTacToePanel extends JPanel {
     public void update() {
         TTTGame game = host.getGame();
         start.setEnabled(game == null || !game.isGameRunning());
+        undo.setEnabled(game != null);
         
         for(int i = 0; i < buttons.length; i++) {
             for(int j = 0; j < buttons[i].length; j++) {
@@ -129,7 +135,22 @@ public class TicTacToePanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             host.newGame();
-            host.publish(0, BranchManager.BRANCH_DEFAULT);
+            host.publish(0, BRANCH_DEFAULT);
+        }
+    }
+    
+    private final class UndoAction extends AbstractAction {
+        private static final long serialVersionUID = 1L;
+        
+        public UndoAction() {
+            super("Undo");
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            BranchManager mgr = host.getBranchManager();
+            mgr.setBranchTip(BRANCH_DEFAULT, mgr.getBranchTip(BRANCH_DEFAULT).getParent());
+            host.publish(0, BRANCH_DEFAULT);
         }
     }
     
