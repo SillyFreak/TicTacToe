@@ -67,17 +67,18 @@ public class TicTacToePanel extends JPanel {
     }
     
     public void update() {
+        TTTGame game = host.getGame();
+        start.setEnabled(game == null || !game.isGameRunning());
+        
         for(int i = 0; i < buttons.length; i++) {
             for(int j = 0; j < buttons[i].length; j++) {
-                updateButton(i, j);
+                updateButton(game, i, j);
             }
         }
     }
     
-    private void updateButton(int i, int j) {
+    private void updateButton(TTTGame game, int i, int j) {
         JButton b = buttons[i][j];
-        TTTGame game = host.getGame();
-        start.setEnabled(game == null);
         if(game == null) {
             b.setEnabled(false);
             b.setText("");
