@@ -1,0 +1,41 @@
+apply from: project.file('gradle/scala.gradle')
+apply from: project.file('gradle/ide.gradle')
+apply from: project.file('gradle/package.gradle')
+apply from: project.file('gradle/GitVersion.gradle')
+apply from: project.file('gradle/maven.gradle')
+apply plugin: 'protobuf'
+
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+group = 'net.slightlymagic'
+
+gitTagPrefix = 'release-'
+
+basePom {
+    project {
+        name project.name
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    compile 'org.scala-lang:scala-library:2.11.1'
+    compile 'at.pria.koza:harmonic:0.1.0-SNAPSHOT'
+    compile 'org.jgroups:jgroups:3.2.7.Final'
+    testCompile 'org.scalatest:scalatest_2.11:2.2.1'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven.eveoh.nl/content/repositories/releases' }
+    }
+    
+    dependencies {
+        classpath 'ws.antonov.gradle.plugins:gradle-plugin-protobuf:0.9.1'
+    }
+}
