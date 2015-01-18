@@ -40,7 +40,7 @@ object NewGameAction extends IOFactory[NewGameAction] {
 
     @throws[PolybufException]
     override def serialize(out: PolybufOutput, instance: NewGameAction, obj: Obj.Builder): Unit = {
-      obj.setExtension(extension, NewGameActionP.newBuilder().build());
+      obj.setExtension(extension, NewGameActionP.newBuilder().build())
     }
 
     @throws[PolybufException]
