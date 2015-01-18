@@ -32,10 +32,10 @@ class Host(cluster: String) {
   ch.connect(cluster)
 
   def engine: Engine = mgr.engine
-  def game: TTTGame = engine.entity(0).asInstanceOf[TTTGame]
+  def game: Option[TTTGame] = engine.entity(0).map { _.asInstanceOf[TTTGame] }
 
   def newGame(): Unit = {
-    mgr.branchTip(BRANCH_DEFAULT, mgr.engine.state(0l))
+    mgr.branchTip(BRANCH_DEFAULT, mgr.engine.state(0l).get)
     mgr.execute(new NewGameAction(mgr.engine))
   }
 

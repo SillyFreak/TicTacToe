@@ -59,14 +59,13 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   host.engine.addHeadListener(new UpdateListener())
 
   def update(): Unit = {
-    try {
-      val game = host.game
-      start.setEnabled(!game.gameRunning)
-      undo.setEnabled(true)
-      for (i <- 0 to buttons.length - 1)
-        updateButton(game, i)
-    } catch {
-      case ex: NoSuchElementException =>
+    host.game match {
+      case Some(game) =>
+        start.setEnabled(!game.gameRunning)
+        undo.setEnabled(true)
+        for (i <- 0 to buttons.length - 1)
+          updateButton(game, i)
+      case None =>
         undo.setEnabled(false)
         start.setEnabled(true)
         for (i <- 0 to buttons.length - 1)
@@ -95,7 +94,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   @SerialVersionUID(1L)
   private final class PlaceAction(i: Int, j: Int) extends AbstractAction {
     override def actionPerformed(e: ActionEvent): Unit = {
-      val game = host.game
+      val game = host.game.get
       val action = new PlacePieceAction(host.engine, game, game.nextPlayer, i, j)
       host.mgr.execute(action)
       host.publish(0, BranchManager.BRANCH_DEFAULT)
