@@ -59,11 +59,18 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   host.engine.addHeadListener(new UpdateListener())
 
   def update(): Unit = {
-    val game = host.game
-    start.setEnabled(game == null || !game.gameRunning)
-    undo.setEnabled(game != null)
-    for (i <- 0 to buttons.length - 1) {
-      updateButton(game, i)
+    try {
+      val game = host.game
+      start.setEnabled(!game.gameRunning)
+      undo.setEnabled(true)
+      for (i <- 0 to buttons.length - 1)
+        updateButton(game, i)
+    } catch {
+      case ex: NoSuchElementException =>
+        undo.setEnabled(false)
+        start.setEnabled(true)
+        for (i <- 0 to buttons.length - 1)
+          updateButton(null, i)
     }
   }
 
