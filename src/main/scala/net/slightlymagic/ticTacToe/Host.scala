@@ -35,8 +35,9 @@ class Host(cluster: String) {
   def game: Option[TTTGame] = engine.entity(0).map { _.asInstanceOf[TTTGame] }
 
   def newGame(): Unit = {
+    implicit def engine = this.engine
     mgr.branchTip(BRANCH_DEFAULT, mgr.engine.state(0l).get)
-    mgr.execute(new NewGameAction(mgr.engine))
+    mgr.execute(new NewGameAction())
   }
 
   def publish(other: Int, branch: String): Unit =

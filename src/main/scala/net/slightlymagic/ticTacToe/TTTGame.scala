@@ -19,11 +19,11 @@ import at.pria.koza.harmonic.Modification;
  * @author SillyFreak
  */
 @SerialVersionUID(-8190897474450467676L)
-class TTTGame(engine: Engine) extends Entity {
-  init(engine)
+class TTTGame()(implicit engine: Engine) extends Entity {
+  init()
 
-  private val board = new TTTBoard(engine)
-  private val players = List(new TTTPlayer(engine, 0), new TTTPlayer(engine, 1))
+  private val board = new TTTBoard()
+  private val players = List(new TTTPlayer(0), new TTTPlayer(1))
 
   private var next: Int = 0
   //-3: not calculated

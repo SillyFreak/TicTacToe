@@ -33,9 +33,9 @@ object NewGameAction extends IOFactory[NewGameAction] {
   val FIELD = NewGameActionP.NEW_GAME_ACTION_FIELD_NUMBER
   val EXTENSION = NewGameActionP.newGameAction
 
-  def getIO(engine: Engine): PolybufIO[NewGameAction] = new IO(engine)
+  def getIO(implicit engine: Engine): PolybufIO[NewGameAction] = new IO()
 
-  private class IO(engine: Engine) extends PolybufIO[NewGameAction] {
+  private class IO(implicit engine: Engine) extends PolybufIO[NewGameAction] {
     override def extension: GeneratedExtension[Obj, NewGameActionP] = EXTENSION
 
     @throws[PolybufException]
@@ -46,12 +46,12 @@ object NewGameAction extends IOFactory[NewGameAction] {
     @throws[PolybufException]
     override def initialize(in: PolybufInput, obj: Obj): NewGameAction = {
       //val p = obj.getExtension(extension)
-      return new NewGameAction(engine)
+      return new NewGameAction()
     }
   }
 }
 
-class NewGameAction(engine: Engine) extends Action(engine) with PolybufSerializable {
+class NewGameAction()(implicit engine: Engine) extends Action(engine) with PolybufSerializable {
   //PolybufSerializable
   def typeId: Int = NewGameAction.FIELD
 
@@ -59,5 +59,5 @@ class NewGameAction(engine: Engine) extends Action(engine) with PolybufSerializa
   def game: TTTGame = _game
 
   override protected[this] def apply0(): Unit =
-    _game = new TTTGame(engine)
+    _game = new TTTGame()
 }

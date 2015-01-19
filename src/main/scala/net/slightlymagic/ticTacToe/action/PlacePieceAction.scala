@@ -34,9 +34,9 @@ object PlacePieceAction extends IOFactory[PlacePieceAction] {
   val FIELD = PlacePieceActionP.PLACE_PIECE_ACTION_FIELD_NUMBER
   val EXTENSION = PlacePieceActionP.placePieceAction
 
-  def getIO(engine: Engine): PolybufIO[PlacePieceAction] = new IO(engine)
+  def getIO(implicit engine: Engine): PolybufIO[PlacePieceAction] = new IO()
 
-  private class IO(engine: Engine) extends PolybufIO[PlacePieceAction] {
+  private class IO(implicit engine: Engine) extends PolybufIO[PlacePieceAction] {
     override def extension: GeneratedExtension[Obj, PlacePieceActionP] = EXTENSION
 
     @throws[PolybufException]
