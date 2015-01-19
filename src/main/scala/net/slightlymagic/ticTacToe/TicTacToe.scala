@@ -41,9 +41,8 @@ object TicTacToe {
 
     val mgr = host.mgr
     val engine = mgr.engine
-    val config = engine.config
 
-    mgr.configure(config)
+    engine.addIO(mgr)
     engine.addIO(PlacePieceAction)
     engine.addIO(NewGameAction)
 
