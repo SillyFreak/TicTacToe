@@ -51,7 +51,7 @@ object NewGameAction extends IOFactory[NewGameAction] {
   }
 }
 
-class NewGameAction()(implicit engine: Engine) extends Action(engine) with PolybufSerializable {
+class NewGameAction()(implicit engine: Engine) extends Action() with PolybufSerializable {
   //PolybufSerializable
   def typeId: Int = NewGameAction.FIELD
 

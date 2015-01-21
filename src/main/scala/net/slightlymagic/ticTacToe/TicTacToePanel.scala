@@ -6,8 +6,6 @@
 
 package net.slightlymagic.ticTacToe
 
-import at.pria.koza.harmonic.BranchManager._
-
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.GridLayout
@@ -19,8 +17,11 @@ import javax.swing.JPanel
 import javax.swing.border.CompoundBorder
 
 import net.slightlymagic.ticTacToe.action.PlacePieceAction
+
 import at.pria.koza.harmonic.Action
 import at.pria.koza.harmonic.BranchManager
+import at.pria.koza.harmonic.BranchManager._
+import at.pria.koza.harmonic.Engine
 import at.pria.koza.harmonic.HeadListener
 import at.pria.koza.harmonic.State
 
@@ -34,6 +35,8 @@ import at.pria.koza.harmonic.State
  */
 @SerialVersionUID(-4160262603196922197L)
 class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
+  private implicit def engine: Engine = host.mgr.engine
+
   val buttons = new Array[JButton](9)
 
   {
@@ -95,7 +98,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   private final class PlaceAction(i: Int, j: Int) extends AbstractAction {
     override def actionPerformed(e: ActionEvent): Unit = {
       val game = host.game.get
-      val action = new PlacePieceAction(host.engine, game, game.nextPlayer, i, j)
+      val action = new PlacePieceAction(game, game.nextPlayer, i, j)
       host.mgr.execute(action)
       host.publish(0, BranchManager.BRANCH_DEFAULT)
     }
