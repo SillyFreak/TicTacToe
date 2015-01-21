@@ -59,7 +59,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   add(undo, BorderLayout.SOUTH)
 
   update()
-  host.engine.addHeadListener(UpdateListener)
+  host.engine.head.addListener(UpdateListener)
 
   def update(): Unit = {
     host.game match {
