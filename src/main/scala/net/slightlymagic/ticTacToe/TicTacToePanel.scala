@@ -52,14 +52,14 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
     add(field)
   }
 
-  val start = new JButton(new StartAction())
+  val start = new JButton(StartAction)
   add(start, BorderLayout.NORTH)
 
-  val undo = new JButton(new UndoAction())
+  val undo = new JButton(UndoAction)
   add(undo, BorderLayout.SOUTH)
 
   update()
-  host.engine.addHeadListener(new UpdateListener())
+  host.engine.addHeadListener(UpdateListener)
 
   def update(): Unit = {
     host.game match {
@@ -105,7 +105,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   }
 
   @SerialVersionUID(1L)
-  private final class StartAction extends AbstractAction("New Game") {
+  private object StartAction extends AbstractAction("New Game") {
     override def actionPerformed(e: ActionEvent): Unit = {
       host.newGame()
       host.publish(0, BRANCH_DEFAULT)
@@ -113,7 +113,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   }
 
   @SerialVersionUID(1L)
-  private final class UndoAction extends AbstractAction("Undo") {
+  private object UndoAction extends AbstractAction("Undo") {
     override def actionPerformed(e: ActionEvent): Unit = {
       val mgr = host.mgr
       mgr.branchTip(BRANCH_DEFAULT, mgr.branchTip(BRANCH_DEFAULT).get.seq(1));
@@ -121,7 +121,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
     }
   }
 
-  private final class UpdateListener extends HeadListener {
+  private object UpdateListener extends HeadListener {
     override def headMoved(prevHead: State, newHead: State): Unit =
       update()
   }
