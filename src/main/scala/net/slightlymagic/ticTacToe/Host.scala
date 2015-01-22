@@ -36,7 +36,7 @@ class Host(cluster: String) {
 
   def newGame(): Unit = {
     implicit def engine = this.engine
-    mgr.branchTip(BRANCH_DEFAULT, mgr.engine.states(0l))
+    mgr.currentBranch.head(mgr.engine.states(0l))
     mgr.execute(new NewGameAction())
   }
 
