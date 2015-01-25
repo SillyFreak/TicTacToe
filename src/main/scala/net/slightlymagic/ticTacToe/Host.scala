@@ -40,6 +40,6 @@ class Host(cluster: String) {
     mgr.execute(new NewGameAction())
   }
 
-  def publish(other: Int, branch: String): Unit =
-    adapter.sendUpdate(null, other, branch)
+  def publish(other: Int, branch: String): Unit = ()
+  //adapter.sendUpdate(null, other, branch)
 }
