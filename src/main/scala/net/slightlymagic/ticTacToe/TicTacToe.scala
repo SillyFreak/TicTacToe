@@ -6,6 +6,8 @@
 
 package net.slightlymagic.ticTacToe
 
+import at.pria.koza.harmonic.StateWrapper
+
 import java.lang.String._
 
 import javax.swing.JFrame
@@ -42,7 +44,7 @@ object TicTacToe {
     val mgr = host.mgr
     val engine = mgr.engine
 
-    engine.addIO(mgr)
+    engine.addIO(StateWrapper)
     engine.addIO(PlacePieceAction)
     engine.addIO(NewGameAction)
 

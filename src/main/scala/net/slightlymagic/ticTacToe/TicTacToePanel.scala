@@ -59,7 +59,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   add(undo, BorderLayout.SOUTH)
 
   update()
-  host.engine.head.addListener(UpdateListener)
+  host.engine.Head.addListener(UpdateListener)
 
   def update(): Unit = {
     host.game match {
@@ -116,8 +116,8 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   private object UndoAction extends AbstractAction("Undo") {
     override def actionPerformed(e: ActionEvent): Unit = {
       val branch = host.mgr.currentBranch
-      branch.head(branch.state.seq(1));
-      host.publish(0, BRANCH_DEFAULT);
+      branch.head = branch.state.seq(1)
+      host.publish(0, BRANCH_DEFAULT)
     }
   }
 

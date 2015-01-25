@@ -53,8 +53,8 @@ object PlacePieceAction extends IOFactory[PlacePieceAction] {
     @throws[PolybufException]
     override def initialize(in: PolybufInput, obj: Obj): PlacePieceAction = {
       val p = obj.getExtension(extension)
-      val game = engine.entities(p.getGame()).asInstanceOf[TTTGame]
-      val player = engine.entities(p.getPlayer()).asInstanceOf[TTTPlayer]
+      val game = engine.Entities(p.getGame()).asInstanceOf[TTTGame]
+      val player = engine.Entities(p.getPlayer()).asInstanceOf[TTTPlayer]
       val x = p.getX()
       val y = p.getY()
 
