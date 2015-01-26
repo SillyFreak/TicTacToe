@@ -27,6 +27,9 @@ dependencies {
     compile 'at.pria.koza:harmonic:0.1.0-SNAPSHOT'
     compile 'org.jgroups:jgroups:3.2.7.Final'
     testCompile 'org.scalatest:scalatest_2.11:2.2.1'
+    
+    //TODO don't reference the path of the project
+    protobuf fileTree("../polybuf/src/main/proto")
 }
 
 buildscript {
