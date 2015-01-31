@@ -37,6 +37,6 @@ class Host(cluster: String) {
     engine.execute(new NewGameAction())
   }
 
-  def publish(other: Int, branch: String): Unit = ()
+  def publish(other: Int): Unit = ()
   //adapter.sendUpdate(null, other, branch)
 }

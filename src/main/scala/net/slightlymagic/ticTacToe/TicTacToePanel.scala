@@ -99,7 +99,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
       val game = host.game.get
       val action = new PlacePieceAction(game, game.nextPlayer, i, j)
       host.engine.execute(action)
-      host.publish(0, BRANCH_DEFAULT)
+      host.publish(0)
     }
   }
 
@@ -107,7 +107,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   private object StartAction extends AbstractAction("New Game") {
     override def actionPerformed(e: ActionEvent): Unit = {
       host.newGame()
-      host.publish(0, BRANCH_DEFAULT)
+      host.publish(0)
     }
   }
 
@@ -116,7 +116,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
     override def actionPerformed(e: ActionEvent): Unit = {
       val branch = host.engine.Branches.currentBranch
       branch.head = branch.state.seq(1)
-      host.publish(0, BRANCH_DEFAULT)
+      host.publish(0)
     }
   }
 
