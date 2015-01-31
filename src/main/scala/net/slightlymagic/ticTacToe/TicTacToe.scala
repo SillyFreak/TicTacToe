@@ -40,9 +40,7 @@ object TicTacToe {
   @throws[Exception]
   def config(cluster: String): Host = {
     val host = new Host(cluster)
-
-    val mgr = host.mgr
-    val engine = mgr.engine
+    val engine = host.engine
 
     engine.addIO(StateWrapper)
     engine.addIO(PlacePieceAction)

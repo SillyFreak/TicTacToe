@@ -19,9 +19,8 @@ import javax.swing.border.CompoundBorder
 import net.slightlymagic.ticTacToe.action.PlacePieceAction
 
 import at.pria.koza.harmonic.Action
-import at.pria.koza.harmonic.BranchManager
-import at.pria.koza.harmonic.BranchManager._
 import at.pria.koza.harmonic.Engine
+import at.pria.koza.harmonic.Engine._
 import at.pria.koza.harmonic.HeadListener
 import at.pria.koza.harmonic.State
 
@@ -35,7 +34,7 @@ import at.pria.koza.harmonic.State
  */
 @SerialVersionUID(-4160262603196922197L)
 class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
-  private implicit def engine: Engine = host.mgr.engine
+  private implicit val engine = host.engine
 
   val buttons = new Array[JButton](9)
 
@@ -99,8 +98,8 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
     override def actionPerformed(e: ActionEvent): Unit = {
       val game = host.game.get
       val action = new PlacePieceAction(game, game.nextPlayer, i, j)
-      host.mgr.execute(action)
-      host.publish(0, BranchManager.BRANCH_DEFAULT)
+      host.engine.execute(action)
+      host.publish(0, BRANCH_DEFAULT)
     }
   }
 
@@ -115,7 +114,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   @SerialVersionUID(1L)
   private object UndoAction extends AbstractAction("Undo") {
     override def actionPerformed(e: ActionEvent): Unit = {
-      val branch = host.mgr.currentBranch
+      val branch = host.engine.Branches.currentBranch
       branch.head = branch.state.seq(1)
       host.publish(0, BRANCH_DEFAULT)
     }
