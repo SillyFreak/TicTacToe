@@ -115,7 +115,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   private object UndoAction extends AbstractAction("Undo") {
     override def actionPerformed(e: ActionEvent): Unit = {
       val branch = host.engine.Branches.currentBranch
-      branch.head = branch.head.parent
+      branch.tip = branch.tip.parent
       host.publish(0)
     }
   }

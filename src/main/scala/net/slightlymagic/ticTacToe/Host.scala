@@ -33,7 +33,7 @@ class Host(cluster: String) {
 
   def newGame(): Unit = {
     implicit def engine = this.engine
-    engine.Branches.currentBranch.head = engine.states(0l)
+    engine.Branches.currentBranch.tip = engine.states(0l)
     engine.execute(new NewGameAction())
   }
 
