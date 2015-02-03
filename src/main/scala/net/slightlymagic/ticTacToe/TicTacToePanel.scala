@@ -98,7 +98,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
     override def actionPerformed(e: ActionEvent): Unit = {
       val game = host.game.get
       val action = new PlacePieceAction(game, game.nextPlayer, i, j)
-      host.engine.execute(action)
+      engine.execute(action)
       host.publish(0)
     }
   }
@@ -114,8 +114,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
   @SerialVersionUID(1L)
   private object UndoAction extends AbstractAction("Undo") {
     override def actionPerformed(e: ActionEvent): Unit = {
-      val branch = host.engine.Branches.currentBranch
-      branch.tip = branch.tip.parent
+      engine.head = engine.head.parent
       host.publish(0)
     }
   }

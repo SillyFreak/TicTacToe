@@ -23,17 +23,19 @@ import org.jgroups.JChannel
  */
 class Host(cluster: String) {
   val engine: Engine = new Engine()
-  private val ch = new JChannel()
-  private val adapter: JGroupsBranchAdapter = new JGroupsBranchAdapter(ch, engine)
-  ch.setDiscardOwnMessages(true)
-  ch.setReceiver(adapter)
-  ch.connect(cluster)
+  private val root = engine.head
+
+  //private val ch = new JChannel()
+  //private val adapter: JGroupsBranchAdapter = new JGroupsBranchAdapter(ch, engine)
+  //ch.setDiscardOwnMessages(true)
+  //ch.setReceiver(adapter)
+  //ch.connect(cluster)
 
   def game: Option[TTTGame] = engine.Entities.get(0).map { _.asInstanceOf[TTTGame] }
 
   def newGame(): Unit = {
     implicit def engine = this.engine
-    engine.Branches.currentBranch.tip = engine.states(0l)
+    engine.head = root
     engine.execute(new NewGameAction())
   }
 
