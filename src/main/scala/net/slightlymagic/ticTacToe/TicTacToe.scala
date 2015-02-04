@@ -6,15 +6,18 @@
 
 package net.slightlymagic.ticTacToe
 
+import at.pria.koza.harmonic.BranchListener
+import at.pria.koza.harmonic.Engine
+import at.pria.koza.harmonic.State
+import at.pria.koza.harmonic.StateNode
+import at.pria.koza.harmonic.local.LocalEngine
 import at.pria.koza.harmonic.viewer.HarmonicViewer
 
 import java.awt.BorderLayout
 import java.awt.Dimension
-
+import java.awt.GridLayout
 import javax.swing.JFrame
 import javax.swing.JPanel
-
-import at.pria.koza.harmonic.StateNode
 
 import net.slightlymagic.ticTacToe.action.NewGameAction
 import net.slightlymagic.ticTacToe.action.PlacePieceAction
@@ -39,6 +42,35 @@ object TicTacToe {
       host
     }
 
+    //configures host 1 to update with host 2
+    def connect(host1: Host, host2: Host) = {
+      //remote connecting to engine 2
+      val remote = new LocalEngine(host2.engine)
+      val remoteBranch = host2.branch.name
+
+      //track branch
+      val branch = host1.branch
+      branch.tracking = (remote, remoteBranch)
+
+      //action when branch is updated
+      def onUpdate() = {
+        remote.download(remoteBranch)(host1.engine)
+        branch.update()
+      }
+
+      //make sure engine 1 pulls when branch changes
+      //TODO use a push mechanism
+      host2.engine.Branches.addListener(new BranchListener() {
+        override def branchMoved(engine: Engine, branch: String, prevTip: State, newTip: State): Unit =
+          if (branch == remoteBranch) {
+            //do this here instead of in onUpdate(), because normally this would be the push,
+            //i.e. the event triggering the onUpdate()
+            remote.fetch()
+            onUpdate()
+          }
+      })
+    }
+
     def createPanel(host: Host) = {
       val jp = new JPanel(new BorderLayout())
       jp.add({
@@ -54,12 +86,20 @@ object TicTacToe {
       jp
     }
 
-    val host = createHost()
+    val host1 = createHost()
+    val host2 = createHost()
+    connect(host1, host2)
+    connect(host2, host1)
 
-    val jf = new JFrame("%08X".format(host.engine.id))
+    val jf = new JFrame("%08X - %08X".format(host1.engine.id, host2.engine.id))
     jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
 
-    jf.add(createPanel(host))
+    jf.add {
+      val jp = new JPanel(new GridLayout(0, 1))
+      jp.add(createPanel(host1))
+      jp.add(createPanel(host2))
+      jp
+    }
 
     jf.pack()
     jf.setVisible(true)
