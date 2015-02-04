@@ -30,18 +30,18 @@ class TTTGame()(implicit engine: Engine) extends Entity {
   //-2: calculated, running
   //-1: draw
   //0+: winner
-  private var winner: Int = -3
+  private var _winner: Int = -3
 
   def board(x: Int, y: Int): TTTPiece = _board(x, y)
 
   def nextPlayer: TTTPlayer = players(next)
 
   def gameRunning: Boolean = {
-    if (winner == -3) {
-      winner = -1
-      if (check() && winner == -3) winner = -2
+    if (_winner == -3) {
+      _winner = -1
+      if (check() && _winner == -3) _winner = -2
     }
-    winner == -2
+    _winner == -2
   }
 
   private[this] def check(): Boolean = {
@@ -55,20 +55,18 @@ class TTTGame()(implicit engine: Engine) extends Entity {
 
   private[this] def check(a: TTTPiece, b: TTTPiece, c: TTTPiece): Boolean = {
     if (a == null || b == null || c == null) {
-      winner = -3
+      _winner = -3
       return true
     }
     if (a.owner != b.owner || b.owner != c.owner) return true
 
-    winner = a.owner.playerId
+    _winner = a.owner.playerId
     return false
   }
 
-  //TODO Option
-  def getWinner: TTTPlayer = {
-    if (gameRunning) null
-    else if (winner < 0) null
-    else players(winner)
+  def winner: Option[TTTPlayer] = {
+    if (gameRunning || _winner < 0) None
+    else Some(players(_winner))
   }
 
   def placePiece(player: TTTPlayer, x: Int, y: Int): Unit =
@@ -92,13 +90,13 @@ class TTTGame()(implicit engine: Engine) extends Entity {
       //previous next can be computed
       next = (next + 1) % players.length
       //recomputing the winner again does not change the state
-      winner = -3
+      _winner = -3
     }
 
     override def revert(): Unit = {
       _board(x, y) = null
       next = (next + players.length - 1) % players.length
-      winner = -3
+      _winner = -3
     }
   }
 }
