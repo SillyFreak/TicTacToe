@@ -21,8 +21,10 @@ import org.jgroups.JChannel
  * @version V0.0 02.08.2013
  * @author SillyFreak
  */
-class Host(cluster: String) {
+class Host() {
   val engine: Engine = new Engine()
+  val branch = engine.Branches.createBranchHere("master")
+  engine.Branches.currentBranch = branch
   private val root = engine.head
 
   //private val ch = new JChannel()
