@@ -38,7 +38,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
 
   val buttons = new Array[JButton](9)
 
-  {
+  add {
     val field = new JPanel(new GridLayout(3, 3));
     val dim = new Dimension(60, 60);
     for (i <- 0 to buttons.length - 1) {
@@ -48,7 +48,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
       buttons(i) = b
       field.add(b)
     }
-    add(field)
+    field
   }
 
   val start = new JButton(StartAction)
