@@ -81,7 +81,7 @@ class TicTacToePanel(host: Host) extends JPanel(new BorderLayout()) {
       b.setEnabled(false)
       b.setText("")
     } else {
-      val p = game.piece(i % 3, i / 3)
+      val p = game.board(i % 3, i / 3)
       b.setEnabled(p == null && game.gameRunning)
       b.setText(
         if (p == null) ""

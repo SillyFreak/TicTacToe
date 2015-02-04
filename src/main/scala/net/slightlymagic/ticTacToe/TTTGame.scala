@@ -22,7 +22,7 @@ import at.pria.koza.harmonic.Modification;
 class TTTGame()(implicit engine: Engine) extends Entity {
   init()
 
-  private val board = new TTTBoard()
+  private val _board = new TTTBoard()
   private val players = List(new TTTPlayer(0), new TTTPlayer(1))
 
   private var next: Int = 0
@@ -32,7 +32,7 @@ class TTTGame()(implicit engine: Engine) extends Entity {
   //0+: winner
   private var winner: Int = -3
 
-  def piece(x: Int, y: Int): TTTPiece = board(x, y)
+  def board(x: Int, y: Int): TTTPiece = _board(x, y)
 
   def nextPlayer: TTTPlayer = players(next)
 
@@ -46,10 +46,10 @@ class TTTGame()(implicit engine: Engine) extends Entity {
 
   private[this] def check(): Boolean = {
     for (i <- 0 to 2)
-      if (!(check(piece(i, 0), piece(i, 1), piece(i, 2)) &&
-        check(piece(0, i), piece(1, i), piece(2, i)))) return false
-    if (!(check(piece(0, 0), piece(1, 1), piece(2, 2)) &&
-      check(piece(0, 2), piece(1, 1), piece(2, 0)))) return false
+      if (!(check(_board(i, 0), _board(i, 1), _board(i, 2)) &&
+        check(_board(0, i), _board(1, i), _board(2, i)))) return false
+    if (!(check(_board(0, 0), _board(1, 1), _board(2, 2)) &&
+      check(_board(0, 2), _board(1, 1), _board(2, 0)))) return false
     return true
   }
 
@@ -83,12 +83,12 @@ class TTTGame()(implicit engine: Engine) extends Entity {
       if (x < 0 || x >= 3 || y < 0 || y >= 3) {
         throw new IllegalArgumentException()
       }
-      if (piece(x, y) != null) {
+      if (_board(x, y) != null) {
         throw new IllegalArgumentException()
       }
 
       //previous piece was null; newPiece() uses modifications
-      board(x, y) = player.newPiece()
+      _board(x, y) = player.newPiece()
       //previous next can be computed
       next = (next + 1) % players.length
       //recomputing the winner again does not change the state
@@ -96,7 +96,7 @@ class TTTGame()(implicit engine: Engine) extends Entity {
     }
 
     override def revert(): Unit = {
-      board(x, y) = null
+      _board(x, y) = null
       next = (next + players.length - 1) % players.length
       winner = -3
     }
