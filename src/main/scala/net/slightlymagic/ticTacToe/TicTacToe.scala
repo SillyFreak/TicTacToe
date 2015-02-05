@@ -8,6 +8,8 @@ package net.slightlymagic.ticTacToe
 
 import at.pria.koza.harmonic.BranchListener
 import at.pria.koza.harmonic.Engine
+import at.pria.koza.harmonic.RemoteEngine
+import at.pria.koza.harmonic.RemoteEngineListener
 import at.pria.koza.harmonic.State
 import at.pria.koza.harmonic.StateNode
 import at.pria.koza.harmonic.local.LocalEngine
@@ -53,21 +55,19 @@ object TicTacToe {
       branch.tracking = (remote, remoteBranch)
 
       //action when branch is updated
-      def onUpdate() = {
-        remote.download(remoteBranch)(host1.engine)
-        branch.update()
-      }
+      remote.addListener(new RemoteEngineListener() {
+        override def headsUpdated(remote: RemoteEngine, oldHeads: Map[String, Long], newHeads: Map[String, Long]): Unit =
+          if (oldHeads.get(remoteBranch) != newHeads.get(remoteBranch)) {
+            remote.download(remoteBranch)(host1.engine)
+            branch.update()
+          }
+      })
 
       //make sure engine 1 pulls when branch changes
       //TODO use a push mechanism
       host2.engine.Branches.addListener(new BranchListener() {
         override def branchMoved(engine: Engine, branch: String, prevTip: State, newTip: State): Unit =
-          if (branch == remoteBranch) {
-            //do this here instead of in onUpdate(), because normally this would be the push,
-            //i.e. the event triggering the onUpdate()
-            remote.fetch()
-            onUpdate()
-          }
+          remote.fetch()
       })
     }
 
