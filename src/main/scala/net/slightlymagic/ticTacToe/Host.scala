@@ -7,7 +7,6 @@
 package net.slightlymagic.ticTacToe
 
 import at.pria.koza.harmonic.Engine
-import at.pria.koza.harmonic.jGroups.JGroupsBranchAdapter
 
 import net.slightlymagic.ticTacToe.action.NewGameAction
 
