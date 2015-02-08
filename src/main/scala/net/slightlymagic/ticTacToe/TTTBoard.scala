@@ -18,12 +18,8 @@ import at.pria.koza.harmonic.Entity;
  * @author SillyFreak
  */
 @SerialVersionUID(840070188013305420L)
-class TTTBoard()(implicit engine: Engine) extends Entity {
-  init()
-
+class TTTBoard(implicit val engine: Engine) extends Entity {
   private val board = new Array[TTTPiece](3 * 3)
-
-  //    public TTTBoard(Engine engine) {
 
   def apply(x: Int, y: Int): TTTPiece =
     board(x + y * 3)

@@ -18,6 +18,4 @@ import at.pria.koza.harmonic.Entity;
  * @author SillyFreak
  */
 @SerialVersionUID(3506767468042989192L)
-class TTTPiece(val owner: TTTPlayer)(implicit engine: Engine) extends Entity {
-  init()
-}
+class TTTPiece(val owner: TTTPlayer)(implicit val engine: Engine) extends Entity

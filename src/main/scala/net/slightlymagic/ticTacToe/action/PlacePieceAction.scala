@@ -63,7 +63,7 @@ object PlacePieceAction extends IOFactory[PlacePieceAction] {
   }
 }
 
-class PlacePieceAction(val game: TTTGame, val player: TTTPlayer, val x: Int, val y: Int)(implicit engine: Engine) extends Action() with PolybufSerializable {
+class PlacePieceAction(val game: TTTGame, val player: TTTPlayer, val x: Int, val y: Int) extends Action with PolybufSerializable {
   //PolybufSerializable
   def typeId: Int = PlacePieceAction.FIELD
 

@@ -18,9 +18,7 @@ import at.pria.koza.harmonic.Entity
  * @author SillyFreak
  */
 @SerialVersionUID(-3201819660675581004L)
-class TTTPlayer(val playerId: Int)(implicit engine: Engine) extends Entity {
-  init()
-
+class TTTPlayer(val playerId: Int)(implicit val engine: Engine) extends Entity {
   def newPiece(): TTTPiece =
     new TTTPiece(this)
 }
