@@ -67,6 +67,6 @@ class PlacePieceAction(val game: TTTGame, val player: TTTPlayer, val x: Int, val
   //PolybufSerializable
   def typeId: Int = PlacePieceAction.FIELD
 
-  override protected[this] def apply0(): Unit =
+  override protected[this] def apply(): Unit =
     game.placePiece(player, x, y)
 }

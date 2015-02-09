@@ -68,15 +68,12 @@ class TTTGame(implicit val engine: Engine) extends Entity {
   }
 
   def placePiece(player: TTTPlayer, x: Int, y: Int): Unit = {
-    if (player.playerId != next) {
-      throw new IllegalArgumentException()
-    }
-    if (x < 0 || x >= 3 || y < 0 || y >= 3) {
-      throw new IllegalArgumentException()
-    }
-    if (_board(x, y) != null) {
-      throw new IllegalArgumentException()
-    }
+    if (player.playerId != next)
+      throw new IllegalArgumentException("wrong player: %s".format(player.playerId))
+    if (x < 0 || x >= 3 || y < 0 || y >= 3)
+      throw new IllegalArgumentException("index out of bounds: %s".format((x, y)))
+    if (_board(x, y) != null)
+      throw new IllegalArgumentException("field not empty: %s".format((x, y)))
 
     modification {
       //previous piece was null; newPiece() uses modifications

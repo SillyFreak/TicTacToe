@@ -51,13 +51,13 @@ object NewGameAction extends IOFactory[NewGameAction] {
   }
 }
 
-class NewGameAction(implicit engine: Engine) extends Action with PolybufSerializable {
+class NewGameAction extends Action with PolybufSerializable {
   //PolybufSerializable
   def typeId: Int = NewGameAction.FIELD
 
   private var _game: TTTGame = _
   def game: TTTGame = _game
 
-  override protected[this] def apply0(): Unit =
+  override protected[this] def apply(): Unit =
     _game = new TTTGame()
 }
