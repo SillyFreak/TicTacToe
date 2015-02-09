@@ -4,11 +4,11 @@
  * Created on 14.05.2013
  */
 
-package net.slightlymagic.ticTacToe;
+package net.slightlymagic.ticTacToe
 
-import at.pria.koza.harmonic.Engine;
-import at.pria.koza.harmonic.Entity;
-import at.pria.koza.harmonic.Modification._;
+import at.pria.koza.harmonic.Engine
+import at.pria.koza.harmonic.Entity
+import at.pria.koza.harmonic.Modification.modification
 
 /**
  * <p>
@@ -78,14 +78,14 @@ class TTTGame(implicit val engine: Engine) extends Entity {
       throw new IllegalArgumentException()
     }
 
-    //previous piece was null; newPiece() uses modifications
-    _board(x, y) = player.newPiece()
-    //previous next can be computed
-    next = (next + 1) % players.length
-    //recomputing the winner again does not change the state
-    _winner = -3
-
     modification {
+      //previous piece was null; newPiece() uses modifications
+      _board(x, y) = player.newPiece()
+      //previous next can be computed
+      next = (next + 1) % players.length
+      //recomputing the winner again does not change the state
+      _winner = -3
+    } isRevertedBy {
       _board(x, y) = null
       next = (next + players.length - 1) % players.length
       _winner = -3
