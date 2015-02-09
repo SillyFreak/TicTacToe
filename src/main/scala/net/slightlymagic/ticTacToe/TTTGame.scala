@@ -8,7 +8,7 @@ package net.slightlymagic.ticTacToe;
 
 import at.pria.koza.harmonic.Engine;
 import at.pria.koza.harmonic.Entity;
-import at.pria.koza.harmonic.Modification;
+import at.pria.koza.harmonic.Modification._;
 
 /**
  * <p>
@@ -67,31 +67,25 @@ class TTTGame(implicit val engine: Engine) extends Entity {
     else Some(players(_winner))
   }
 
-  def placePiece(player: TTTPlayer, x: Int, y: Int): Unit =
-    new PlacePieceModification(player, x, y)()
-
-  private final class PlacePieceModification(player: TTTPlayer, x: Int, y: Int) extends Modification {
-
-    protected[this] override def apply0(): Unit = {
-      if (player.playerId != next) {
-        throw new IllegalArgumentException()
-      }
-      if (x < 0 || x >= 3 || y < 0 || y >= 3) {
-        throw new IllegalArgumentException()
-      }
-      if (_board(x, y) != null) {
-        throw new IllegalArgumentException()
-      }
-
-      //previous piece was null; newPiece() uses modifications
-      _board(x, y) = player.newPiece()
-      //previous next can be computed
-      next = (next + 1) % players.length
-      //recomputing the winner again does not change the state
-      _winner = -3
+  def placePiece(player: TTTPlayer, x: Int, y: Int): Unit = {
+    if (player.playerId != next) {
+      throw new IllegalArgumentException()
+    }
+    if (x < 0 || x >= 3 || y < 0 || y >= 3) {
+      throw new IllegalArgumentException()
+    }
+    if (_board(x, y) != null) {
+      throw new IllegalArgumentException()
     }
 
-    override def revert(): Unit = {
+    //previous piece was null; newPiece() uses modifications
+    _board(x, y) = player.newPiece()
+    //previous next can be computed
+    next = (next + 1) % players.length
+    //recomputing the winner again does not change the state
+    _winner = -3
+
+    modification {
       _board(x, y) = null
       next = (next + players.length - 1) % players.length
       _winner = -3
